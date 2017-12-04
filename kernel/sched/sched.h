@@ -3132,3 +3132,13 @@ struct sched_avg_stats {
 	int nr_max;
 };
 extern void sched_get_nr_running_avg(struct sched_avg_stats *stats);
+
+static inline unsigned long cpu_util_dl(struct rq *rq)
+{
+	return (rq->dl.running_bw * SCHED_CAPACITY_SCALE) >> BW_SHIFT;
+}
+
+static inline unsigned long cpu_util_cfs(struct rq *rq)
+{
+	return rq->cfs.avg.util_avg;
+}
