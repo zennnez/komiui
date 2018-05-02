@@ -22,7 +22,7 @@ ccflags-y += -nostdlib -Wl,-soname=linux-vdso.so.1 \
 ccflags-y += $(DISABLE_LTO)
 
 # Force -O2 to avoid libgcc dependencies
-CFLAGS_REMOVE_vgettimeofday.o = -pg -Os
+CFLAGS_REMOVE_vgettimeofday.o = -pg -Os $(CC_FLAGS_SCS)
 CFLAGS_vgettimeofday.o = -O2 -fPIC
 ifneq ($(cc-name),clang)
 CFLAGS_vgettimeofday.o += -mcmodel=tiny
