@@ -900,6 +900,7 @@ struct rq {
 	u64 rt_avg;
 	u64 age_stamp;
 	struct sched_avg avg_rt;
+	struct sched_avg avg_dl;
 	u64 idle_stamp;
 	u64 avg_idle;
 
@@ -2236,9 +2237,16 @@ static inline void sched_rt_avg_update(struct rq *rq, u64 rt_delta)
 	rq->rt_avg += rt_delta * arch_scale_freq_capacity(NULL, cpu_of(rq));
 	sched_avg_update(rq);
 }
+int update_dl_rq_load_avg(u64 now, struct rq *rq, int running);
 #else
 static inline void sched_rt_avg_update(struct rq *rq, u64 rt_delta) { }
 static inline void sched_avg_update(struct rq *rq) { }
+
+static inline int
+update_dl_rq_load_avg(u64 now, struct rq *rq, int running)
+{
+	return 0;
+}
 #endif
 
 #ifdef CONFIG_SMP
