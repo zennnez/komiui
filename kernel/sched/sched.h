@@ -3164,10 +3164,14 @@ struct sched_avg_stats {
 extern void sched_get_nr_running_avg(struct sched_avg_stats *stats);
 
 #ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
+static inline unsigned long cpu_bw_dl(struct rq *rq)
+{
+	return (rq->dl.running_bw * SCHED_CAPACITY_SCALE) >> BW_SHIFT;
+}
 
 static inline unsigned long cpu_util_dl(struct rq *rq)
 {
-	return (rq->dl.running_bw * SCHED_CAPACITY_SCALE) >> BW_SHIFT;
+	return READ_ONCE(rq->avg_dl.util_avg);
 }
 
 static inline unsigned long cpu_util_cfs(struct rq *rq)
