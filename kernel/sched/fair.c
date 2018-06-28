@@ -3564,6 +3564,29 @@ int update_dl_rq_load_avg(u64 now, struct rq *rq, int running)
 	return ret;
 }
 
+#if defined(CONFIG_IRQ_TIME_ACCOUNTING) || defined(CONFIG_PARAVIRT_TIME_ACCOUNTING)
+int update_irq_load_avg(struct rq *rq, u64 running)
+{
+	int ret = 0;
+	struct rt_rq *rt_rq = &rq->rt;
+	/*
+	 * We know the time that has been used by interrupt since last update
+	 * but we don't when. Let be pessimistic and assume that interrupt has
+	 * happened just before the update. This is not so far from reality
+	 * because interrupt will most probably wake up task and trig an update
+	 * of rq clock during which the metric si updated.
+	 * We start to decay with normal context time and then we add the
+	 * interrupt context time.
+	 * We can safely remove running from rq->clock because
+	 * rq->clock += delta with delta >= running
+	 */
+	ret = ___update_load_avg(rq->clock - running, rq->cpu, &rq->avg_irq, 0, 0, NULL, rt_rq);
+	ret += ___update_load_avg(rq->clock, rq->cpu, &rq->avg_irq, 1, 1, NULL, rt_rq);
+
+	return ret;
+}
+#endif
+
 /*
  * Optional action to be done while updating the load average
  */
@@ -9514,13 +9537,18 @@ static void attach_tasks(struct lb_env *env)
 	rq_unlock(env->dst_rq, &rf);
 }
 
-static inline bool others_rqs_have_blocked(struct rq *rq)
+static inline bool others_have_blocked(struct rq *rq)
 {
 	if (READ_ONCE(rq->avg_rt.util_avg))
 		return true;
 
 	if (READ_ONCE(rq->avg_dl.util_avg))
 		return true;
+
+#if defined(CONFIG_IRQ_TIME_ACCOUNTING) || defined(CONFIG_PARAVIRT_TIME_ACCOUNTING)
+	if (READ_ONCE(rq->avg_irq.util_avg))
+		return true;
+#endif
 
 	return false;
 }
@@ -9581,6 +9609,7 @@ static void update_blocked_averages(int cpu)
 	}
 	update_rt_rq_load_avg(rq_clock_task(rq), cpu, &rq->rt, 0);
 	update_dl_rq_load_avg(rq_clock_task(rq), rq, 0);
+	update_irq_load_avg(rq, 0);
 #ifdef CONFIG_NO_HZ_COMMON
 	rq->last_blocked_load_update_tick = jiffies;
 #endif
@@ -9645,6 +9674,7 @@ static inline void update_blocked_averages(int cpu)
 	update_cfs_rq_load_avg(cfs_rq_clock_task(cfs_rq), cfs_rq);
 	update_rt_rq_load_avg(rq_clock_task(rq), cpu, &rq->rt, 0);
 	update_dl_rq_load_avg(rq_clock_task(rq), rq, 0);
+	update_irq_load_avg(rq, 0);
 #ifdef CONFIG_NO_HZ_COMMON
 	rq->last_blocked_load_update_tick = jiffies;
 #endif
