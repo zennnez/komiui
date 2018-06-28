@@ -901,6 +901,9 @@ struct rq {
 	u64 age_stamp;
 	struct sched_avg avg_rt;
 	struct sched_avg avg_dl;
+#if defined(CONFIG_IRQ_TIME_ACCOUNTING) || defined(CONFIG_PARAVIRT_TIME_ACCOUNTING)
+        struct sched_avg        avg_irq;
+#endif
 	u64 idle_stamp;
 	u64 avg_idle;
 
@@ -2238,12 +2241,29 @@ static inline void sched_rt_avg_update(struct rq *rq, u64 rt_delta)
 	sched_avg_update(rq);
 }
 int update_dl_rq_load_avg(u64 now, struct rq *rq, int running);
+
+#if defined(CONFIG_IRQ_TIME_ACCOUNTING) || defined(CONFIG_PARAVIRT_TIME_ACCOUNTING)
+int update_irq_load_avg(struct rq *rq, u64 running);
+#else
+static inline int
+update_irq_load_avg(struct rq *rq, u64 running)
+{
+	return 0;
+}
+#endif
+
 #else
 static inline void sched_rt_avg_update(struct rq *rq, u64 rt_delta) { }
 static inline void sched_avg_update(struct rq *rq) { }
 
 static inline int
 update_dl_rq_load_avg(u64 now, struct rq *rq, int running)
+{
+	return 0;
+}
+
+static inline int
+update_irq_load_avg(struct rq *rq, u64 running)
 {
 	return 0;
 }
