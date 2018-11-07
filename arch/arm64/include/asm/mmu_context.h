@@ -37,6 +37,8 @@
 
 extern bool rodata_full;
 
+extern bool rodata_full;
+
 static inline void contextidr_thread_switch(struct task_struct *next)
 {
 	if (!IS_ENABLED(CONFIG_PID_IN_CONTEXTIDR))
