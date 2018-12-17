@@ -94,7 +94,7 @@ void calc_accumulated_sum_32(const int halflife)
 	printf("\n};\n\n");
 }
 
-void main(void)
+int main(void)
 {
 	int hl_value[] = HALFLIFE;
 	int hl_count = sizeof(hl_value) / sizeof(int);
