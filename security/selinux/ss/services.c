@@ -88,7 +88,6 @@ void selinux_ss_init(struct selinux_ss **ss)
 	mutex_init(&selinux_ss.status_lock);
 	*ss = &selinux_ss;
 }
-
 /* Forward declaration. */
 static int context_struct_to_string(struct policydb *policydb,
 				    struct context *context,
