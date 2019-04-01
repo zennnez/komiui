@@ -11571,6 +11571,7 @@ static int idle_balance(struct rq *this_rq, struct rq_flags *rf)
 	struct sched_domain *sd;
 	int pulled_task = 0;
 	u64 curr_cost = 0;
+	u64 avg_idle = this_rq->avg_idle;
 	bool force_lb = false;
 
 	if (cpu_isolated(this_cpu))
@@ -11587,6 +11588,12 @@ static int idle_balance(struct rq *this_rq, struct rq_flags *rf)
 	 */
 	if (!cpu_active(this_cpu))
 		return 0;
+		
+	/* 
+	 * Allow selecting avg_idle with max capacity cpus_allowed
+	 */
+	 if (!is_min_capacity_cpu(this_cpu) && min_cap_cluster_has_misfit_task())
+		avg_idle = ULLONG_MAX;
 
 	/*
 	 * Force higher capacity CPUs doing load balance, when the lower
@@ -11605,7 +11612,7 @@ static int idle_balance(struct rq *this_rq, struct rq_flags *rf)
 	 */
 	rq_unpin_lock(this_rq, rf);
 
-	if (!force_lb && (this_rq->avg_idle < sysctl_sched_migration_cost ||
+	if (!force_lb && (avg_idle < sysctl_sched_migration_cost ||
 	    !READ_ONCE(this_rq->rd->overload))) {
 		rcu_read_lock();
 		sd = rcu_dereference_check_sched_domain(this_rq->sd);
@@ -11632,7 +11639,7 @@ static int idle_balance(struct rq *this_rq, struct rq_flags *rf)
 		}
 
 		if (!force_lb &&
-		    this_rq->avg_idle < curr_cost + sd->max_newidle_lb_cost) {
+		    avg_idle < curr_cost + sd->max_newidle_lb_cost) {
 			update_next_balance(sd, &next_balance);
 			break;
 		}
