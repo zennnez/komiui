@@ -18,11 +18,9 @@ obj-vdso   := $(obj-vdso-c) $(obj-vdso-s)
 ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1  --hash-style=sysv \
 		--build-id $(call ld-option,-n) -T
 
-ccflags-y := -shared -fno-common -fno-builtin -fno-stack-protector
-ccflags-y += -DDISABLE_BRANCH_PROFILING -ffixed-x18
-ccflags-y += -nostdlib -Wl,-soname=linux-vdso.so.1 \
-		$(call cc-ldoption, -Wl$(comma)--hash-style=sysv)
-ccflags-y += $(DISABLE_LTO)
+ccflags-y := -fno-stack-protector -DDISABLE_BRANCH_PROFILING -ffixed-x18
+ldflags-y := -shared -nostdlib -soname=linux-vdso.so.1 \
+		$(call ld-option, --hash-style=sysv) -n -T
 
 # Force -O2 to avoid libgcc dependencies
 CFLAGS_REMOVE_vgettimeofday.o = -pg -Os
@@ -69,8 +67,6 @@ $(obj-vdso-c): %.o: %.c FORCE
 	$(call if_changed_dep,vdsocc)
 
 # Actual build commands
-quiet_cmd_vdsold = VDSOL   $@
-      cmd_vdsold = $(CC) $(c_flags) -Wl,-n -Wl,-T $(real-prereqs) -o $@
 quiet_cmd_vdsocc = VDSOC   $@
       cmd_vdsocc = ${CC} $(c_flags) -c -o $@ $<
 quiet_cmd_vdsoas = VDSOA   $@
