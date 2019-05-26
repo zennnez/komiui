@@ -2147,8 +2147,10 @@ cppflags-$(CONFIG_WLAN_HANG_EVENT) += -DDP_SUPPORT_RECOVERY_NOTIFY
 # Enable lock of serialization component to avoid race condition issues
 cppflags-y += -DWLAN_CMD_SERIALIZATION_LOCKING
 
-ccflags-$(CONFIG_ENABLE_SIZE_OPTIMIZE) += -Os
+ccflags-y += -Os
+ccflags-y += -g0
 ccflags-$(CONFIG_WLAN_FEATURE_ETHTOOL) += -DWLAN_FEATURE_ETHTOOL
+
 # DFS component
 cppflags-y += -DWLAN_DFS_STATIC_MEM_ALLOC
 cppflags-$(CONFIG_WLAN_DFS_MASTER_ENABLE) += -DQCA_MCL_DFS_SUPPORT
