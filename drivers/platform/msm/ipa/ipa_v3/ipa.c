@@ -6047,19 +6047,22 @@ static ssize_t ipa3_write(struct file *file, const char __user *buf,
 			  size_t count, loff_t *ppos)
 {
 	unsigned long missing;
+	char *dbg_buff = NULL;
+	int ret = 0;
 
-	char dbg_buff[32] = { 0 };
-
-	int i = 0;
-
-	if (sizeof(dbg_buff) < count + 1)
+	if (count < 2)
 		return -EFAULT;
+
+	dbg_buff = kmalloc((count + 1) * sizeof(char), GFP_KERNEL);
+	if (!dbg_buff)
+		return -ENOMEM;
 
 	missing = copy_from_user(dbg_buff, buf, count);
 
 	if (missing) {
 		IPAERR("Unable to copy data from user\n");
-		return -EFAULT;
+		ret = -EFAULT;
+		goto end;
 	}
 
 	if (count > 0)
@@ -6097,7 +6100,7 @@ static ssize_t ipa3_write(struct file *file, const char __user *buf,
 			 * when vlan mode is passed to our dev we expect
 			 * another write
 			 */
-			return count;
+			goto end_msg;
 		}
 
 		/* trim ending newline character if any */
@@ -6114,7 +6117,7 @@ static ssize_t ipa3_write(struct file *file, const char __user *buf,
 		} else if (strcmp(dbg_buff, "1")) {
 			IPAERR("got invalid string %s not loading FW\n",
 				dbg_buff);
-			return count;
+			goto end_msg;
 		}
 		pr_info("IPA is loading with %sMHI configuration\n",
 			ipa3_ctx->ipa_config_is_mhi ? "" : "non ");
@@ -6122,7 +6125,7 @@ static ssize_t ipa3_write(struct file *file, const char __user *buf,
 
 	/* Prevent consequent calls from trying to load the FW again. */
 	if (ipa3_is_ready())
-		return count;
+		goto end_msg;
 
 	/* Prevent multiple calls from trying to load the FW again. */
 	if (ipa3_ctx->fw_loaded) {
@@ -6136,8 +6139,11 @@ static ssize_t ipa3_write(struct file *file, const char __user *buf,
 	queue_work(ipa3_ctx->transport_power_mgmt_wq,
 		&ipa3_fw_loading_work);
 
+end_msg:
 	IPADBG("Scheduled a work to load IPA FW\n");
-	return count;
+end:
+	kfree(dbg_buff);
+	return ret < 0 ? ret : count;
 }
 
 /**
