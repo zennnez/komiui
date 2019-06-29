@@ -813,7 +813,7 @@ static int msm_lsm_check_and_set_lab_controls(struct snd_pcm_substream *substrea
 			prtd->lsm_client->stage_cfg[stage_idx].lab_enable = enable;
 	}
 
-	memset(chmap, 0, out_hw_params->num_chs);
+	memset(chmap, 0, sizeof(chmap));
 	/*
 	 * First channel to be read from lab is always the
 	 * best channel (0xff). For second channel onwards,
