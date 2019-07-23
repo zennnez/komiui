@@ -219,6 +219,14 @@ static inline unsigned long kaslr_offset(void)
  * pass on to access_ok(), for instance.
  */
 #define untagged_addr(addr)	\
+	((__typeof__(addr))sign_extend64((__force u64)(addr), 55))
+
+/*
+ * When dealing with data aborts, watchpoints, or instruction traps we may end
+ * up with a tagged userland pointer. Clear the tag to get a sane pointer to
+ * pass on to access_ok(), for instance.
+ */
+#define untagged_addr(addr)	\
 	((__typeof__(addr))sign_extend64((u64)(addr), 55))
 
 #ifdef CONFIG_KASAN_SW_TAGS
