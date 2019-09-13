@@ -397,12 +397,6 @@
 	qcom,mdss-dsi-pan-enable-dynamic-fps;
 	qcom,mdss-dsi-pan-fps-update =
 		"dfps_immediate_porch_mode_vfp";
-	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
-	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
-	qcom,mdss-dsi-panel-status-command-state = "dsi_hs_mode";
-	qcom,mdss-dsi-panel-status-value = <0x9d 0x9d 0x9d 0x9d>;
-	qcom,mdss-dsi-panel-on-check-value = <0x9d 0x9d 0x9d 0x9d>;
-	qcom,mdss-dsi-panel-status-read-length = <4>;
 	qcom,dsi-dyn-clk-enable;
 	qcom,dsi-dyn-clk-list =
 		<924736320 909324048 913177120 917030184 920883256 928589392>;
@@ -424,12 +418,6 @@
 &dsi_td4328_truly_video {
 	qcom,mdss-dsi-t-clk-post = <0x0e>;
 	qcom,mdss-dsi-t-clk-pre = <0x32>;
-	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
-	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
-	qcom,mdss-dsi-panel-status-command-state = "dsi_hs_mode";
-	qcom,mdss-dsi-panel-status-value = <0x1c>;
-	qcom,mdss-dsi-panel-on-check-value = <0x1c>;
-	qcom,mdss-dsi-panel-status-read-length = <1>;
 	qcom,mdss-dsi-display-timings {
 		timing@0{
 			qcom,mdss-dsi-panel-phy-timings =
@@ -449,12 +437,6 @@
 	qcom,mdss-dsi-t-clk-post = <0x0e>;
 	qcom,mdss-dsi-t-clk-pre = <0x32>;
 	qcom,ulps-enabled;
-	qcom,mdss-dsi-panel-status-check-mode = "reg_read";
-	qcom,mdss-dsi-panel-status-command = [06 01 00 01 00 00 01 0a];
-	qcom,mdss-dsi-panel-status-command-state = "dsi_hs_mode";
-	qcom,mdss-dsi-panel-status-value = <0x1c>;
-	qcom,mdss-dsi-panel-on-check-value = <0x1c>;
-	qcom,mdss-dsi-panel-status-read-length = <1>;
 	qcom,mdss-dsi-display-timings {
 		timing@0{
 			qcom,mdss-dsi-panel-phy-timings =
