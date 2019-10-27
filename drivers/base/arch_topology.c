@@ -181,7 +181,7 @@ int detect_share_cap_flag(void)
 		if (!policy)
 			return 0;
 
-		if (cpumask_equal(cpu_cpu_mask(cpu),
+		if (cpumask_equal(topology_sibling_cpumask(cpu),
 				  policy->related_cpus)) {
 			share_cap_level = share_cap_thread;
 			cpufreq_cpu_put(policy);
@@ -195,7 +195,7 @@ int detect_share_cap_flag(void)
 			continue;
 		}
 
-		if (cpumask_equal(topology_sibling_cpumask(cpu),
+		if (cpumask_equal(cpu_cpu_mask(cpu),
 				  policy->related_cpus)) {
 			share_cap_level = share_cap_die;
 			cpufreq_cpu_put(policy);
@@ -296,7 +296,7 @@ int topology_smt_flags(void)
 	if (asym_cpucap == asym_thread)
 		flags |= SD_ASYM_CPUCAPACITY;
 
-	if (share_cap >= share_cap_thread)
+	if (share_cap == share_cap_thread)
 		flags |= SD_SHARE_CAP_STATES;
 
 	return flags;
@@ -309,7 +309,7 @@ int topology_core_flags(void)
 	if (asym_cpucap == asym_core)
 		flags |= SD_ASYM_CPUCAPACITY;
 
-	if (share_cap >= share_cap_core)
+	if (share_cap == share_cap_core)
 		flags |= SD_SHARE_CAP_STATES;
 
 	return flags;
@@ -322,7 +322,7 @@ int topology_cpu_flags(void)
 	if (asym_cpucap == asym_die)
 		flags |= SD_ASYM_CPUCAPACITY;
 
-	if (share_cap >= share_cap_die)
+	if (share_cap == share_cap_die)
 		flags |= SD_SHARE_CAP_STATES;
 
 	return flags;
