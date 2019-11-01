@@ -49,24 +49,24 @@ struct sugov_policy {
 
 struct sugov_cpu {
 	struct update_util_data update_util;
-	struct sugov_policy *sg_policy;
-	unsigned int cpu;
+	struct sugov_policy	*sg_policy;
+	unsigned int		cpu;
 
-	bool iowait_boost_pending;
-	unsigned int iowait_boost;
-	unsigned int iowait_boost_max;
+	bool			iowait_boost_pending;
+	unsigned int		iowait_boost;
+	unsigned int		iowait_boost_max;
 	u64 last_update;
 
 	/* The fields below are only needed when sharing a policy. */
-	unsigned long util_cfs;
-	unsigned long util_dl;
-	unsigned long bw_dl;
-	unsigned long util_rt;
-	unsigned long max;
+	unsigned long		util_cfs;
+	unsigned long		util_dl;
+	unsigned long		bw_dl;
+	unsigned long		util_rt;
+	unsigned long		max;
 
 	/* The field below is for single-CPU policies only. */
 #ifdef CONFIG_NO_HZ_COMMON
-	unsigned long saved_idle_calls;
+	unsigned long		saved_idle_calls;
 #endif
 };
 
