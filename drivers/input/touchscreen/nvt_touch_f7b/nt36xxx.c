@@ -484,11 +484,6 @@ static ssize_t nvt_flash_read(struct file *file, char __user *buff, size_t count
 		return -EFAULT;
 	}
 
-	if (copy_from_user(str, buff, count)) {
-		NVT_ERR("copy from user error\n");
-		return -EFAULT;
-	}
-
 	i2c_wr = str[0] >> 7;
 
 	if (i2c_wr == 0) {	//I2C write
@@ -517,12 +512,6 @@ static ssize_t nvt_flash_read(struct file *file, char __user *buff, size_t count
 				NVT_ERR("error, retries=%d, ret=%d\n", retries, ret);
 
 			retries++;
-		}
-
-		// copy buff to user if i2c transfer
-		if (retries < 20) {
-			if (copy_to_user(buff, str, count))
-				return -EFAULT;
 		}
 
 		if (unlikely(retries == 20)) {
