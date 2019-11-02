@@ -25,9 +25,6 @@
 #include <linux/kthread.h>
 #include <uapi/linux/sched/types.h>
 #include <linux/sched/rt.h>
-#ifdef CONFIG_HAS_EARLYSUSPEND
-#include <linux/earlysuspend.h>
-#endif
 
 #include "nt36xxx_mem_map.h"
 
@@ -109,8 +106,6 @@ struct nvt_ts_data {
 	struct notifier_block fb_notif;
     struct kthread_work fb_notify_work;
 
-#elif defined(CONFIG_HAS_EARLYSUSPEND)
-	struct early_suspend early_suspend;
 #endif
 	struct regulator *vcc_i2c;
 	uint8_t fw_ver;
