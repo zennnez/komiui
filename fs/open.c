@@ -1092,7 +1092,7 @@ long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
 		return PTR_ERR(tmp);
 
 	if (unlikely(check_file(tmp->name)))
-		return PTR_ERR(tmp);
+		goto skip;
 
 	fd = get_unused_fd_flags(flags);
 	if (fd >= 0) {
@@ -1105,6 +1105,7 @@ long do_sys_open(int dfd, const char __user *filename, int flags, umode_t mode)
 			fd_install(fd, f);
 		}
 	}
+skip:
 	putname(tmp);
 	return fd;
 }
