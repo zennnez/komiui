@@ -233,12 +233,6 @@ static inline unsigned long kaslr_offset(void)
 #define __tag_get(addr)		0
 #endif
 
-/*
- * Physical vs virtual RAM address space conversion.  These are
- * private definitions which should NOT be used outside memory.h
- * files.  Use virt_to_phys/phys_to_virt/__pa/__va instead.
- */
-
 
 /*
  * The linear kernel range starts in the middle of the virtual adddress
