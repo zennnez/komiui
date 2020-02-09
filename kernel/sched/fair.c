@@ -9298,6 +9298,7 @@ static int task_hot(struct task_struct *p, struct lb_env *env)
 
 	return delta < (s64)sysctl_sched_migration_cost;
 }
+#endif
 
 #ifdef CONFIG_NUMA_BALANCING
 /*
