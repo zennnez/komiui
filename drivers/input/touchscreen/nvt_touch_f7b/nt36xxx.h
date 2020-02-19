@@ -16,7 +16,7 @@
  * more details.
  *
  */
-#ifndef 	_LINUX_NVT_TOUCH_H
+#ifndef	_LINUX_NVT_TOUCH_H
 #define		_LINUX_NVT_TOUCH_H
 
 #include <linux/i2c.h>
@@ -54,7 +54,7 @@
 #define NVT_ERR(fmt, args...)    pr_err("[%s] %s %d: " fmt, NVT_I2C_NAME, __func__, __LINE__, ##args)
 #if 1
 #define LOGV(log, ...) \
-        printk("[%s] %s (line %d): " log, NVT_I2C_NAME, __func__, __LINE__, ##__VA_ARGS__)
+	printk("[%s] %s (line %d): " log, NVT_I2C_NAME, __func__, __LINE__, ##__VA_ARGS__)
 #else
 #define LOGV(log, ...) {}
 #endif
@@ -130,7 +130,7 @@ struct nvt_ts_data {
 };
 
 #if NVT_TOUCH_PROC
-struct nvt_flash_data{
+struct nvt_flash_data {
 	rwlock_t lock;
 	struct i2c_client *client;
 };

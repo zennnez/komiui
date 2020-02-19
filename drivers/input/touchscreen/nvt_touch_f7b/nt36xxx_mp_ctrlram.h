@@ -21,7 +21,7 @@
 
 static uint32_t IC_X_CFG_SIZE = 18;
 static uint32_t IC_Y_CFG_SIZE = 36;
-static uint32_t IC_KEY_CFG_SIZE = 0;
+static uint32_t IC_KEY_CFG_SIZE;
 static uint32_t X_Channel = 18;
 static uint32_t Y_Channel = 36;
 static uint32_t Key_Channel = TOUCH_KEY_NUM;
@@ -713,7 +713,7 @@ static int32_t PS_Config_Lmt_FW_Diff_P[40 * 40] = {
 #endif /* #if TOUCH_KEY_NUM > 0 */
 };
 
-static int32_t PS_Config_Lmt_FW_Diff_N[40 *40] = {
+static int32_t PS_Config_Lmt_FW_Diff_N[40 * 40] = {
 	-50, -50, -50, -50, -50, -50, -50, -50, -65535, -65535, -50, -50, -50, -50, -50, -50, -50, -50,
 	-50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50,
 	-50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50, -50,

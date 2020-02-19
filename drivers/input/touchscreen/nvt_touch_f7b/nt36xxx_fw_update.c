@@ -32,7 +32,7 @@
 #define SIZE_64KB 65536
 #define BLOCK_64KB_NUM 4
 
-const struct firmware *fw_entry = NULL;
+const struct firmware *fw_entry;
 extern char g_lcd_id[128];
 
 /*******************************************************
@@ -46,7 +46,7 @@ int32_t update_firmware_request(char *filename)
 {
 	int32_t ret = 0;
 
-	if (NULL == filename) {
+	if (filename == NULL) {
 		return -1;
 	}
 
@@ -86,7 +86,7 @@ void update_firmware_release(void)
 	if (fw_entry) {
 		release_firmware(fw_entry);
 	}
-	fw_entry=NULL;
+	fw_entry = NULL;
 }
 
 /*******************************************************
@@ -164,7 +164,7 @@ int32_t Resume_PD(void)
 
 	// Check 0xAA (Resume Command)
 	retry = 0;
-	while(1) {
+	while (1) {
 		msleep(1);
 		buf[0] = 0x00;
 		buf[1] = 0x00;
@@ -322,7 +322,7 @@ int32_t Init_BootLoader(void)
 
 	// Check 0xAA (Initiate Flash Block)
 	retry = 0;
-	while(1) {
+	while (1) {
 		msleep(1);
 		buf[0] = 0x00;
 		buf[1] = 0x00;
@@ -341,7 +341,7 @@ int32_t Init_BootLoader(void)
 		}
 	}
 
-	NVT_LOG("Init OK \n");
+	NVT_LOG("Init OK\n");
 	msleep(20);
 
 	return 0;
@@ -459,7 +459,7 @@ int32_t Erase_Flash(void)
 	else
 		count = fw_entry->size / FLASH_SECTOR_SIZE;
 
-	for(i = 0; i < count; i++) {
+	for (i = 0; i < count; i++) {
 		// Write Enable
 		buf[0] = 0x00;
 		buf[1] = 0x06;
@@ -555,7 +555,7 @@ int32_t Erase_Flash(void)
 		}
 	}
 
-	NVT_LOG("Erase OK \n");
+	NVT_LOG("Erase OK\n");
 	return 0;
 }
 
@@ -637,11 +637,11 @@ int32_t Write_Flash(void)
 			}
 		}
 		if (fw_entry->size - Flash_Address >= 256)
-			tmpvalue=(Flash_Address >> 16) + ((Flash_Address >> 8) & 0xFF) + (Flash_Address & 0xFF) + 0x00 + (255);
+			tmpvalue = (Flash_Address >> 16) + ((Flash_Address >> 8) & 0xFF) + (Flash_Address & 0xFF) + 0x00 + (255);
 		else
-			tmpvalue=(Flash_Address >> 16) + ((Flash_Address >> 8) & 0xFF) + (Flash_Address & 0xFF) + 0x00 + (fw_entry->size - Flash_Address - 1);
+			tmpvalue = (Flash_Address >> 16) + ((Flash_Address >> 8) & 0xFF) + (Flash_Address & 0xFF) + 0x00 + (fw_entry->size - Flash_Address - 1);
 
-		for (k = 0;k < min(fw_entry->size - Flash_Address,(size_t)256); k++)
+		for (k = 0; k < min(fw_entry->size - Flash_Address, (size_t)256); k++)
 			tmpvalue += fw_entry->data[Flash_Address + k];
 
 		tmpvalue = 255 - tmpvalue + 1;
@@ -653,7 +653,7 @@ int32_t Write_Flash(void)
 		buf[3] = ((Flash_Address >> 8) & 0xFF);
 		buf[4] = (Flash_Address & 0xFF);
 		buf[5] = 0x00;
-		buf[6] = min(fw_entry->size - Flash_Address,(size_t)256) - 1;
+		buf[6] = min(fw_entry->size - Flash_Address, (size_t)256) - 1;
 		buf[7] = tmpvalue;
 		ret = CTP_I2C_WRITE(ts->client, I2C_HW_Address, buf, 8);
 		if (ret < 0) {
@@ -724,7 +724,7 @@ int32_t Write_Flash(void)
 	}
 
 	NVT_LOG("Programming...%2d%%\r", 100);
-	NVT_LOG("Program OK         \n");
+	NVT_LOG("Program OK        \n");
 	return 0;
 }
 
@@ -822,7 +822,7 @@ int32_t Verify_Flash(void)
 		}
 	}
 
-	NVT_LOG("Verify OK \n");
+	NVT_LOG("Verify OK\n");
 	return 0;
 }
 
@@ -851,14 +851,14 @@ static int update_tp_info(void)
 	}
 
 	NVT_LOG("updata tp info IC FW Ver = 0x%02X\n", buf[1]);
-	if (strstr(g_lcd_id,"nt36672a video mode dsi shenchao panel") != NULL) {
+	if (strstr(g_lcd_id, "nt36672a video mode dsi shenchao panel") != NULL) {
 		sprintf(tp_info_buf, "[Vendor]shenchao,[FW]0x%02x,[IC]nt36672a\n", buf[1]);
-	} else if (strstr(g_lcd_id,"nt36672a video mode dsi tianma panel") != NULL) {
+	} else if (strstr(g_lcd_id, "nt36672a video mode dsi tianma panel") != NULL) {
 		sprintf(tp_info_buf, "[Vendor]tianma,[FW]0x%02x,[IC]nt36672a\n", buf[1]);
 	} else {
 		return -ENODEV;
 	}
-	update_lct_tp_info(tp_info_buf,NULL);
+	update_lct_tp_info(tp_info_buf, NULL);
 	return 0;
 }
 
@@ -1025,16 +1025,17 @@ void Boot_Update_Firmware(struct work_struct *work)
 	int32_t ret = 0;
 
 	char firmware_name[256] = "";
+
 	LOGV("g_lcd_id = %s\n", g_lcd_id);
-	if (strstr(g_lcd_id,"nt36672a video mode dsi shenchao panel") != NULL) {
+	if (strstr(g_lcd_id, "nt36672a video mode dsi shenchao panel") != NULL) {
 		sprintf(firmware_name, BOOT_UPDATE_FIRMWARE_NAME_SHENCHAO);
-		NVT_LOG("firmware version is shenchao. \n");
-	}else if (strstr(g_lcd_id,"nt36672a video mode dsi tianma panel") != NULL) {
+		NVT_LOG("firmware version is shenchao.\n");
+	} else if (strstr(g_lcd_id, "nt36672a video mode dsi tianma panel") != NULL) {
 		sprintf(firmware_name, BOOT_UPDATE_FIRMWARE_NAME_TIANMA);
-		NVT_LOG("firmware version is tianma. \n");
-	}else {
+		NVT_LOG("firmware version is tianma.\n");
+	} else {
 		sprintf(firmware_name, "Unknow");
-		NVT_LOG("firmware version is unkonw. \n");
+		NVT_LOG("firmware version is unkonw.\n");
 	}
 	ret = update_firmware_request(firmware_name);
 	if (ret) {

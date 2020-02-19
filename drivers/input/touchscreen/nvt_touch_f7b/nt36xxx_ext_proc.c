@@ -52,13 +52,13 @@ static struct proc_dir_entry *NVT_proc_baseline_entry;
 static struct proc_dir_entry *NVT_proc_raw_entry;
 static struct proc_dir_entry *NVT_proc_diff_entry;
 extern char g_lcd_id[128];
-static uint8_t tp_maker_cg_lamination = 0;
-static uint8_t display_maker = 0;
-static uint8_t cg_ink_color = 0;
-static uint8_t hw_version = 0;
-static uint8_t project_id = 0;
-static uint8_t cg_maker = 0;
-static uint8_t reservation_byte = 0;
+static uint8_t tp_maker_cg_lamination;
+static uint8_t display_maker;
+static uint8_t cg_ink_color;
+static uint8_t hw_version;
+static uint8_t project_id;
+static uint8_t cg_maker;
+static uint8_t reservation_byte;
 
 /*******************************************************
 Description:
@@ -99,7 +99,7 @@ return:
 *******************************************************/
 uint8_t nvt_get_fw_pipe(void)
 {
-	uint8_t buf[8]= {0};
+	uint8_t buf[8] = {0};
 
 	//---set xdata index to EVENT BUF ADDR---
 	buf[0] = 0xFF;
@@ -295,7 +295,7 @@ static int32_t c_show(struct seq_file *m, void *v)
 	seq_puts(m, "\n");
 #endif
 
-	seq_printf(m, "\n\n");
+	seq_puts(m, "\n\n");
 	return 0;
 }
 
@@ -723,23 +723,24 @@ int lct_nvt_tp_info_node_init(void)
 {
     char tp_info_buf[64];
     char tp_lockdown_info_buf[64];
+
     nvt_get_xiaomi_lockdown_info();
     memset(tp_info_buf, 0, sizeof(tp_info_buf));
-    if (IS_ERR_OR_NULL(g_lcd_id)){
-        NVT_ERR("g_lcd_id is ERROR!\n");
-        goto tp_node_init;
+    if (IS_ERR_OR_NULL(g_lcd_id)) {
+	NVT_ERR("g_lcd_id is ERROR!\n");
+	goto tp_node_init;
     } else {
-        LOGV("LCM information : %s\n", g_lcd_id);
-        if (strstr(g_lcd_id,"nt36672a video mode dsi shenchao panel") != NULL) {
+	LOGV("LCM information : %s\n", g_lcd_id);
+        if (strstr(g_lcd_id, "nt36672a video mode dsi shenchao panel") != NULL) {
 			sprintf(tp_info_buf, "[Vendor]shenchao,[FW]0x%02x,[IC]nt36672a\n", ts->fw_ver);
 			goto tp_node_init;
-        } else if (strstr(g_lcd_id,"nt36672a video mode dsi tianma panel") != NULL) {
+        } else if (strstr(g_lcd_id, "nt36672a video mode dsi tianma panel") != NULL) {
 			sprintf(tp_info_buf, "[Vendor]tianma,[FW]0x%02x,[IC]nt36672a\n", ts->fw_ver);
 			goto tp_node_init;
 		} else {
 			init_lct_tp_info(NULL, NULL);
 			return -ENODEV;
-        }
+	}
     }
 tp_node_init:
     sprintf(tp_lockdown_info_buf, "%02X%02X%02X%02X%04X%02X%02X\n", tp_maker_cg_lamination, display_maker, cg_ink_color, hw_version, project_id, cg_maker, reservation_byte);
@@ -757,7 +758,7 @@ return:
 *******************************************************/
 int32_t nvt_extra_proc_init(void)
 {
-	NVT_proc_fw_version_entry = proc_create(NVT_FW_VERSION, 0444, NULL,&nvt_fw_version_fops);
+	NVT_proc_fw_version_entry = proc_create(NVT_FW_VERSION, 0444, NULL, &nvt_fw_version_fops);
 	if (NVT_proc_fw_version_entry == NULL) {
 		NVT_ERR("create proc/nvt_fw_version Failed!\n");
 		return -ENOMEM;
@@ -765,7 +766,7 @@ int32_t nvt_extra_proc_init(void)
 		NVT_LOG("create proc/nvt_fw_version Succeeded!\n");
 	}
 
-	NVT_proc_baseline_entry = proc_create(NVT_BASELINE, 0444, NULL,&nvt_baseline_fops);
+	NVT_proc_baseline_entry = proc_create(NVT_BASELINE, 0444, NULL, &nvt_baseline_fops);
 	if (NVT_proc_baseline_entry == NULL) {
 		NVT_ERR("create proc/nvt_baseline Failed!\n");
 		return -ENOMEM;
@@ -773,7 +774,7 @@ int32_t nvt_extra_proc_init(void)
 		NVT_LOG("create proc/nvt_baseline Succeeded!\n");
 	}
 
-	NVT_proc_raw_entry = proc_create(NVT_RAW, 0444, NULL,&nvt_raw_fops);
+	NVT_proc_raw_entry = proc_create(NVT_RAW, 0444, NULL, &nvt_raw_fops);
 	if (NVT_proc_raw_entry == NULL) {
 		NVT_ERR("create proc/nvt_raw Failed!\n");
 		return -ENOMEM;
@@ -781,7 +782,7 @@ int32_t nvt_extra_proc_init(void)
 		NVT_LOG("create proc/nvt_raw Succeeded!\n");
 	}
 
-	NVT_proc_diff_entry = proc_create(NVT_DIFF, 0444, NULL,&nvt_diff_fops);
+	NVT_proc_diff_entry = proc_create(NVT_DIFF, 0444, NULL, &nvt_diff_fops);
 	if (NVT_proc_diff_entry == NULL) {
 		NVT_ERR("create proc/nvt_diff Failed!\n");
 		return -ENOMEM;

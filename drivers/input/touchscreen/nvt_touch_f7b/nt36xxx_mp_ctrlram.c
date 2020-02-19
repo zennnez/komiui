@@ -48,44 +48,44 @@
 		printk(fmt, ##args);	\
 } while (0)
 
-static uint8_t *RecordResult_Short = NULL;
-static uint8_t *RecordResult_Short_Diff = NULL;
-static uint8_t *RecordResult_Short_Base = NULL;
-static uint8_t *RecordResult_Open = NULL;
-static uint8_t *RecordResult_FWMutual = NULL;
-static uint8_t *RecordResult_FW_CC = NULL;
-static uint8_t *RecordResult_FW_CC_I = NULL;
-static uint8_t *RecordResult_FW_CC_Q = NULL;
-static uint8_t *RecordResult_FW_DiffMax = NULL;
-static uint8_t *RecordResult_FW_DiffMin = NULL;
+static uint8_t *RecordResult_Short;
+static uint8_t *RecordResult_Short_Diff;
+static uint8_t *RecordResult_Short_Base;
+static uint8_t *RecordResult_Open;
+static uint8_t *RecordResult_FWMutual;
+static uint8_t *RecordResult_FW_CC;
+static uint8_t *RecordResult_FW_CC_I;
+static uint8_t *RecordResult_FW_CC_Q;
+static uint8_t *RecordResult_FW_DiffMax;
+static uint8_t *RecordResult_FW_DiffMin;
 
-static int32_t TestResult_Short = 0;
-static int32_t TestResult_Short_Diff = 0;
-static int32_t TestResult_Short_Base = 0;
-static int32_t TestResult_Open = 0;
-static int32_t TestResult_FW_Rawdata = 0;
-static int32_t TestResult_FWMutual = 0;
-static int32_t TestResult_FW_CC = 0;
-static int32_t TestResult_FW_CC_I = 0;
-static int32_t TestResult_FW_CC_Q = 0;
-static int32_t TestResult_Noise = 0;
-static int32_t TestResult_FW_DiffMax = 0;
-static int32_t TestResult_FW_DiffMin = 0;
+static int32_t TestResult_Short;
+static int32_t TestResult_Short_Diff;
+static int32_t TestResult_Short_Base;
+static int32_t TestResult_Open;
+static int32_t TestResult_FW_Rawdata;
+static int32_t TestResult_FWMutual;
+static int32_t TestResult_FW_CC;
+static int32_t TestResult_FW_CC_I;
+static int32_t TestResult_FW_CC_Q;
+static int32_t TestResult_Noise;
+static int32_t TestResult_FW_DiffMax;
+static int32_t TestResult_FW_DiffMin;
 
-static int32_t *RawData_Short = NULL;
-static int32_t *RawData_Short_Diff = NULL;
-static int32_t *RawData_Short_Base = NULL;
-static int32_t *RawData_Open = NULL;
-static int32_t *RawData_Diff = NULL;
-static int32_t *RawData_Diff_Min = NULL;
-static int32_t *RawData_Diff_Max = NULL;
-static int32_t *RawData_FWMutual = NULL;
-static int32_t *RawData_FW_CC = NULL;
-static int32_t *RawData_FW_CC_I = NULL;
-static int32_t *RawData_FW_CC_Q = NULL;
+static int32_t *RawData_Short;
+static int32_t *RawData_Short_Diff;
+static int32_t *RawData_Short_Base;
+static int32_t *RawData_Open;
+static int32_t *RawData_Diff;
+static int32_t *RawData_Diff_Min;
+static int32_t *RawData_Diff_Max;
+static int32_t *RawData_FWMutual;
+static int32_t *RawData_FW_CC;
+static int32_t *RawData_FW_CC_I;
+static int32_t *RawData_FW_CC_Q;
 
-static struct proc_dir_entry *NVT_proc_selftest_entry = NULL;
-static int8_t nvt_mp_test_result_printed = 0;
+static struct proc_dir_entry *NVT_proc_selftest_entry;
+static int8_t nvt_mp_test_result_printed;
 
 extern void nvt_change_mode(uint8_t mode);
 extern uint8_t nvt_get_fw_pipe(void);
@@ -380,7 +380,7 @@ static int32_t nvt_save_rawdata_to_csv(int32_t *rawdata, uint8_t x_ch, uint8_t y
 		}
 		nvt_print_data_log_in_one_line(rawdata + y * x_ch, x_ch);
 		printk("\n");
-		sprintf(fbufp + (iArrayIndex + 1) * 7 + y * 2,"\r\n");
+		sprintf(fbufp + (iArrayIndex + 1) * 7 + y * 2, "\r\n");
 	}
 #if TOUCH_KEY_NUM > 0
 	keydata_output_offset = y_ch * x_ch * 7 + y_ch * 2;
@@ -1107,10 +1107,10 @@ static int32_t RawDataTest_SinglePoint_Sub(int32_t rawdata[], uint8_t RecordResu
 
 			RecordResult[iArrayIndex] = 0x00; // default value for PASS
 
-			if(rawdata[iArrayIndex] > Rawdata_Limit_Postive[iArrayIndex])
+			if (rawdata[iArrayIndex] > Rawdata_Limit_Postive[iArrayIndex])
 				RecordResult[iArrayIndex] |= 0x01;
 
-			if(rawdata[iArrayIndex] < Rawdata_Limit_Negative[iArrayIndex])
+			if (rawdata[iArrayIndex] < Rawdata_Limit_Negative[iArrayIndex])
 				RecordResult[iArrayIndex] |= 0x02;
 		}
 	}
@@ -1120,10 +1120,10 @@ static int32_t RawDataTest_SinglePoint_Sub(int32_t rawdata[], uint8_t RecordResu
 
 		RecordResult[iArrayIndex] = 0x00; // default value for PASS
 
-		if(rawdata[iArrayIndex] > Rawdata_Limit_Postive[iArrayIndex])
+		if (rawdata[iArrayIndex] > Rawdata_Limit_Postive[iArrayIndex])
 			RecordResult[iArrayIndex] |= 0x01;
 
-		if(rawdata[iArrayIndex] < Rawdata_Limit_Negative[iArrayIndex])
+		if (rawdata[iArrayIndex] < Rawdata_Limit_Negative[iArrayIndex])
 			RecordResult[iArrayIndex] |= 0x02;
 	}
 #endif /* #if TOUCH_KEY_NUM > 0 */
@@ -1303,15 +1303,14 @@ static int32_t c_show_selftest(struct seq_file *m, void *v)
 		}
 	}
 
-	NVT_LOG("++TestResult_FWMutual = %d \n",TestResult_FWMutual);
-	NVT_LOG("++TestResult_FW_CC = %d \n",TestResult_FW_CC);
-	NVT_LOG("++TestResult_Noise = %d \n",TestResult_Noise);
-	NVT_LOG("++TestResult_Short = %d \n",TestResult_Short);
-	NVT_LOG("++TestResult_Open = %d \n",TestResult_Open);
-	if ((TestResult_FWMutual == 0)&& (TestResult_FW_CC == 0) && (TestResult_Noise == 0)&& (TestResult_Short ==0) && (TestResult_Open == 0)){
+	NVT_LOG("++TestResult_FWMutual = %d\n", TestResult_FWMutual);
+	NVT_LOG("++TestResult_FW_CC = %d\n", TestResult_FW_CC);
+	NVT_LOG("++TestResult_Noise = %d\n", TestResult_Noise);
+	NVT_LOG("++TestResult_Short = %d\n", TestResult_Short);
+	NVT_LOG("++TestResult_Open = %d\n", TestResult_Open);
+	if ((TestResult_FWMutual == 0) && (TestResult_FW_CC == 0) && (TestResult_Noise == 0) && (TestResult_Short == 0) && (TestResult_Open == 0)) {
 		nvt_mp_seq_printf(m, "Pass\n");
-	}
-	else {
+	} else {
 		nvt_mp_seq_printf(m, "Fail\n");
 	}
 
@@ -1404,7 +1403,7 @@ static int lct_nova_tp_selftest(void)
 	}
 
 	/* Parsing criteria from dts */
-	if(of_property_read_bool(np, "novatek,mp-support-dt")) {
+	if (of_property_read_bool(np, "novatek,mp-support-dt")) {
 		/*
 		 * Parsing Criteria by Novatek PID
 		 * The string rule is "novatek-mp-criteria-<nvt_pid>"
@@ -1560,15 +1559,14 @@ static int lct_nova_tp_selftest(void)
 
 	NVT_LOG("--\n");
 
-	if ((TestResult_FWMutual == 0)&& (TestResult_FW_CC == 0) && (TestResult_Noise == 0)&& (TestResult_Short ==0) && (TestResult_Open == 0)){
+	if ((TestResult_FWMutual == 0) && (TestResult_FW_CC == 0) && (TestResult_Noise == 0) && (TestResult_Short == 0) && (TestResult_Open == 0)) {
 		NVT_LOG("Pass\n");
-                return 2;
-	}
-	else {
+		return 2;
+	} else {
 		NVT_LOG("FWMutual=%d, FW_CC=%d, Noise=%d, Short=%d, Open=%d, Fail!\n",
 			TestResult_FWMutual, TestResult_FW_CC, TestResult_Noise, TestResult_Short, TestResult_Open);
 		NVT_LOG("Fail\n");
-                return 1;
+		return 1;
 	}
 }
 
@@ -1611,7 +1609,7 @@ static int32_t nvt_selftest_open(struct inode *inode, struct file *file)
 	}
 
 	/* Parsing criteria from dts */
-	if(of_property_read_bool(np, "novatek,mp-support-dt")) {
+	if (of_property_read_bool(np, "novatek,mp-support-dt")) {
 		/*
 		 * Parsing Criteria by Novatek PID
 		 * The string rule is "novatek-mp-criteria-<nvt_pid>"
@@ -2045,11 +2043,10 @@ int32_t nvt_mp_proc_init(void)
 		NVT_ERR("create /proc/nvt_selftest Failed!\n");
 		return -1;
 	} else {
-		if(nvt_mp_buffer_init()) {
+		if (nvt_mp_buffer_init()) {
 			NVT_ERR("Allocate mp memory failed\n");
 			return -1;
-		}
-		else {
+		} else {
 			NVT_LOG("create /proc/nvt_selftest Succeeded!\n");
 		}
 		return 0;
