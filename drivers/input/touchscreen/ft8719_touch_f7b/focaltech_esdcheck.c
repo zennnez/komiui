@@ -96,14 +96,14 @@ int idc_esdcheck_lcderror(struct fts_ts_data *ts_data)
 	struct i2c_client *client = ts_data->client;
 
 	FTS_DEBUG("[ESD]Check LCD ESD");
-	if ( (tp_need_recovery == 1) && (lcd_need_reset == 0) ) {
+	if ((tp_need_recovery == 1) && (lcd_need_reset == 0)) {
 		tp_need_recovery = 0;
 		/* LCD reset, need recover TP state */
 		fts_tp_state_recovery(client);
 	}
 
 	ret = fts_i2c_read_reg(client, FTS_REG_ESD_SATURATE, &val);
-	if ( ret < 0) {
+	if (ret < 0) {
 		FTS_ERROR("[ESD]: Read ESD_SATURATE(0xED) failed ret=%d!", ret);
 		return -EIO;
 	}
@@ -207,7 +207,7 @@ static bool get_flow_cnt(struct fts_ts_data *ts_data)
 		FTS_ERROR("[ESD]: Read Reg 0x91 failed ret = %d!!", ret);
 		fts_esdcheck_data.i2c_nack_cnt++;
 	} else {
-		if ( reg_value == fts_esdcheck_data.flow_work_cnt_last ) {
+		if (reg_value == fts_esdcheck_data.flow_work_cnt_last) {
 			fts_esdcheck_data.flow_work_hold_cnt++;
 		} else {
 			fts_esdcheck_data.flow_work_hold_cnt = 0;
@@ -264,9 +264,9 @@ static int esdcheck_algorithm(struct fts_ts_data *ts_data)
 	/* 4. In factory mode, can't check esd */
 	reg_addr = FTS_REG_WORKMODE;
 	ret = fts_i2c_read(client, &reg_addr, 1, &reg_value, 1);
-	if ( ret < 0 ) {
+	if (ret < 0) {
 		fts_esdcheck_data.i2c_nack_cnt++;
-	} else if ( (reg_value & 0x70) !=  FTS_REG_WORKMODE_WORK_VALUE) {
+	} else if ((reg_value & 0x70) !=  FTS_REG_WORKMODE_WORK_VALUE) {
 		FTS_DEBUG("[ESD]: not in work mode, no check esd, return immediately!!");
 		return 0;
 	}
@@ -285,7 +285,7 @@ static int esdcheck_algorithm(struct fts_ts_data *ts_data)
 	}
 
 	/* 8. If need hardware reset, then handle it here */
-	if ( hardware_reset == 1) {
+	if (hardware_reset == 1) {
 		fts_esdcheck_tp_reset(ts_data);
 	}
 
@@ -304,20 +304,20 @@ static void esdcheck_func(struct work_struct *work)
 {
 	u8 val = 0;
 	struct fts_ts_data *ts_data = container_of(work,
-				                  struct fts_ts_data, esdcheck_work.work);
+						  struct fts_ts_data, esdcheck_work.work);
 
 	FTS_FUNC_ENTER();
-	if (ENABLE == fts_esdcheck_data.mode) {
+	if (fts_esdcheck_data.mode == ENABLE) {
 		if (ts_data->ic_info.is_incell) {
 			fts_i2c_read_reg(ts_data->client, FTS_REG_ESDCHECK_DISABLE, &val);
-			if (0xA5 == val) {
+			if (val == 0xA5) {
 				fts_esdcheck_data.mode = DISABLE;
 				return;
 			}
 		}
 		esdcheck_algorithm(ts_data);
 		queue_delayed_work(ts_data->ts_workqueue, &ts_data->esdcheck_work,
-				           msecs_to_jiffies(ESDCHECK_WAIT_TIME));
+					   msecs_to_jiffies(ESDCHECK_WAIT_TIME));
 	}
 	FTS_FUNC_EXIT();
 }
@@ -374,6 +374,7 @@ int fts_esdcheck_proc_busy(bool proc_debug)
 int fts_esdcheck_switch(bool enable)
 {
 	struct fts_ts_data *ts_data = fts_data;
+
 	FTS_FUNC_ENTER();
 	if (fts_esdcheck_data.mode == ENABLE) {
 		if (enable) {
@@ -381,7 +382,7 @@ int fts_esdcheck_switch(bool enable)
 			fts_esdcheck_data.flow_work_hold_cnt = 0;
 			fts_esdcheck_data.flow_work_cnt_last = 0;
 			queue_delayed_work(ts_data->ts_workqueue, &ts_data->esdcheck_work,
-				               msecs_to_jiffies(ESDCHECK_WAIT_TIME));
+					       msecs_to_jiffies(ESDCHECK_WAIT_TIME));
 		} else {
 			FTS_DEBUG("[ESD]: ESD check stop!!");
 			cancel_delayed_work(&ts_data->esdcheck_work);
@@ -418,7 +419,7 @@ int fts_esdcheck_suspend(void)
 *  Output:
 *  Return:
 *****************************************************************************/
-int fts_esdcheck_resume( void )
+int fts_esdcheck_resume(void)
 {
 	FTS_FUNC_ENTER();
 	fts_esdcheck_switch(ENABLE);
@@ -477,7 +478,7 @@ static ssize_t fts_esdcheck_show(struct device *dev, struct device_attribute *at
  *   write example:echo 01 > fts_esd_mode   ---make esdcheck enable
  *
  */
-static DEVICE_ATTR (fts_esd_mode, S_IRUGO | S_IWUSR, fts_esdcheck_show, fts_esdcheck_store);
+static DEVICE_ATTR(fts_esd_mode, 0644, fts_esdcheck_show, fts_esdcheck_store);
 
 static struct attribute *fts_esd_mode_attrs[] = {
 
@@ -500,7 +501,7 @@ int fts_create_esd_sysfs(struct i2c_client *client)
 	int ret = 0;
 
 	ret = sysfs_create_group(&client->dev.kobj, &fts_esd_group);
-	if ( ret != 0) {
+	if (ret != 0) {
 		FTS_ERROR("fts_create_esd_sysfs(sysfs) create failed!");
 		sysfs_remove_group(&client->dev.kobj, &fts_esd_group);
 		return ret;

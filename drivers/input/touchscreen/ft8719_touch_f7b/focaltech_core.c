@@ -79,8 +79,8 @@ static int fts_gesture_switch(struct input_dev *dev, unsigned int type, unsigned
 extern bool enable_gesture_mode; // for gesture
 #define WAKEUP_OFF 4
 #define WAKEUP_ON 5
-bool fts_delay_gesture = false;
-bool fts_suspend_stats = false;
+bool fts_delay_gesture;
+bool fts_suspend_stats;
 static struct wakeup_source gestrue_wakelock;
 #endif
 
@@ -129,14 +129,14 @@ static int fts_get_chip_types(
 	struct ft_chip_t ctype[] = FTS_CHIP_TYPE_MAPPING;
 	u32 ctype_entries = sizeof(ctype) / sizeof(struct ft_chip_t);
 
-	if ((0x0 == id_h) || (0x0 == id_l)) {
+	if ((0x0 == id_h) || (id_l == 0x0)) {
 		FTS_ERROR("id_h/id_l is 0");
 		return -EINVAL;
 	}
 
 	FTS_DEBUG("verify id:0x%02x%02x", id_h, id_l);
 	for (i = 0; i < ctype_entries; i++) {
-		if (VALID == fw_valid) {
+		if (fw_valid == VALID) {
 			if ((id_h == ctype[i].chip_idh) && (id_l == ctype[i].chip_idl))
 				break;
 		} else {
@@ -176,7 +176,7 @@ static int fts_get_ic_information(struct fts_ts_data *ts_data)
 	do {
 		ret = fts_i2c_read_reg(client, FTS_REG_CHIP_ID, &chip_id[0]);
 		ret = fts_i2c_read_reg(client, FTS_REG_CHIP_ID2, &chip_id[1]);
-		if ((ret < 0) || (0x0 == chip_id[0]) || (0x0 == chip_id[1])) {
+		if ((ret < 0) || (0x0 == chip_id[0]) || (chip_id[1] == 0x0)) {
 			FTS_DEBUG("i2c read invalid, read:0x%02x%02x", chip_id[0], chip_id[1]);
 		} else {
 			ret = fts_get_chip_types(ts_data, chip_id[0], chip_id[1], VALID);
@@ -212,7 +212,7 @@ static int fts_get_ic_information(struct fts_ts_data *ts_data)
 		else
 			id_cmd_len = FTS_CMD_READ_ID_LEN;
 		ret = fts_i2c_read(client, id_cmd, id_cmd_len, chip_id, 2);
-		if ((ret < 0) || (0x0 == chip_id[0]) || (0x0 == chip_id[1])) {
+		if ((ret < 0) || (0x0 == chip_id[0]) || (chip_id[1] == 0x0)) {
 			FTS_ERROR("read boot id fail");
 			return -EIO;
 		}
@@ -779,7 +779,7 @@ static int fts_read_touchdata(struct fts_ts_data *data)
 	struct i2c_client *client = data->client;
 
 #if FTS_GESTURE_EN
-	if (0 == fts_gesture_readdata(data)) {
+	if (fts_gesture_readdata(data) == 0) {
 		FTS_INFO("succuss to get gesture data in irq handler");
 		return 1;
 	}
@@ -925,12 +925,12 @@ static int fts_irq_registration(struct fts_ts_data *ts_data)
 	if (ts_data->irq != ts_data->client->irq)
 		FTS_ERROR("IRQs are inconsistent, please check <interrupts> & <focaltech,irq-gpio> in DTS");
 
-	if (0 == pdata->irq_gpio_flags)
+	if (pdata->irq_gpio_flags == 0)
 		pdata->irq_gpio_flags = IRQF_TRIGGER_FALLING;
 	FTS_INFO("irq flag:%x", pdata->irq_gpio_flags);
 	ret = request_threaded_irq(ts_data->irq, NULL, fts_ts_interrupt,
-					           pdata->irq_gpio_flags | IRQF_ONESHOT | IRQF_NO_SUSPEND,
-					           ts_data->client->name, ts_data);
+						   pdata->irq_gpio_flags | IRQF_ONESHOT | IRQF_NO_SUSPEND,
+						   ts_data->client->name, ts_data);
 
 	return ret;
 }
@@ -1097,7 +1097,7 @@ err_irq_gpio_req:
 *  Return: return 0 if succuss, otherwise return error code
 *****************************************************************************/
 static int fts_get_dt_coords(struct device *dev, char *name,
-					         struct fts_ts_platform_data *pdata)
+						 struct fts_ts_platform_data *pdata)
 {
 	int ret = 0;
 	u32 coords[FTS_COORDS_ARR_SIZE] = { 0 };
@@ -1165,7 +1165,7 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
 			FTS_ERROR("Key number undefined!");
 
 		ret = of_property_read_u32_array(np, "focaltech,keys",
-					                     pdata->keys, pdata->key_number);
+							     pdata->keys, pdata->key_number);
 		if (ret)
 			FTS_ERROR("Keys undefined!");
 		else if (pdata->key_number > FTS_MAX_KEYS)
@@ -1176,7 +1176,7 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
 			FTS_ERROR("Key Y Coord undefined!");
 
 		ret = of_property_read_u32_array(np, "focaltech,key-x-coords",
-					                     pdata->key_x_coords, pdata->key_number);
+							     pdata->key_x_coords, pdata->key_number);
 		if (ret)
 			FTS_ERROR("Key X Coords undefined!");
 
@@ -1196,7 +1196,7 @@ static int fts_parse_dt(struct device *dev, struct fts_ts_platform_data *pdata)
 		FTS_ERROR("Unable to get irq_gpio");
 
 	ret = of_property_read_u32(np, "focaltech,max-touch-number", &temp_val);
-	if (0 == ret) {
+	if (ret == 0) {
 		if (temp_val < 2)
 			pdata->max_touch_number = 2;
 		else if (temp_val > FTS_MAX_POINTS_SUPPORT)
@@ -1227,7 +1227,7 @@ static int lct_tp_set_screen_angle_callback(unsigned int angle)
 
 	FTS_FUNC_ENTER();
 
-	if ( fts_data->suspended || (fts_data->touch_state == 1) ) {
+	if (fts_data->suspended || (fts_data->touch_state == 1)) {
 		FTS_ERROR("tp is suspended or flashing, can not to set\n");
 		return ret;
 	}
@@ -1240,8 +1240,8 @@ static int lct_tp_set_screen_angle_callback(unsigned int angle)
 		val = 0;
 	}
 
-	ret = fts_i2c_write_reg(client,FTS_SET_ANGLE,val);
-	if(ret < 0)
+	ret = fts_i2c_write_reg(client, FTS_SET_ANGLE, val);
+	if (ret < 0)
 		FTS_ERROR("[FTS] i2c write FTS_SET_ANGLE, err\n");
 
 	FTS_FUNC_EXIT();
@@ -1261,11 +1261,11 @@ static int fts_gesture_switch(struct input_dev *dev, unsigned int type, unsigned
 			}
 		}
 		FTS_INFO("choose the gesture mode yes or not\n");
-		if(value == WAKEUP_OFF){
+		if (value == WAKEUP_OFF) {
 			FTS_INFO("disable gesture mode\n");
 			enable_gesture_mode = false;
 			fts_gesture_node__switch(false);
-		}else if(value == WAKEUP_ON){
+		} else if (value == WAKEUP_ON) {
 			FTS_INFO("enable gesture mode\n");
 			enable_gesture_mode  = true;
 			fts_gesture_node__switch(true);
@@ -1277,11 +1277,12 @@ static int fts_gesture_switch(struct input_dev *dev, unsigned int type, unsigned
 static int lct_tp_gesture_node_callback(bool flag)
 {
 	int retval = 0;
+
 	if (fts_suspend_stats) {
 		FTS_INFO("ERROR: TP is suspend!\n");
 		return -1;
 	}
-	if(flag) {
+	if (flag) {
 		enable_gesture_mode = true;
 		fts_gesture_node__switch(flag);
 		FTS_INFO("enable gesture mode\n");
@@ -1316,7 +1317,7 @@ static void tp_fb_notifier_resume_work(struct work_struct *work)
 *  Return:
 *****************************************************************************/
 static int fb_notifier_callback(struct notifier_block *self,
-					            unsigned long event, void *data)
+						    unsigned long event, void *data)
 {
 	struct msm_drm_notifier *evdata = data;
 	int *blank;
@@ -1354,8 +1355,8 @@ static int fb_notifier_callback(struct notifier_block *self,
 static void fts_ts_early_suspend(struct early_suspend *handler)
 {
 	struct fts_ts_data *data = container_of(handler,
-					                        struct fts_ts_data,
-					                        early_suspend);
+								struct fts_ts_data,
+								early_suspend);
 
 	fts_ts_suspend(&data->client->dev);
 }
@@ -1370,8 +1371,8 @@ static void fts_ts_early_suspend(struct early_suspend *handler)
 static void fts_ts_late_resume(struct early_suspend *handler)
 {
 	struct fts_ts_data *data = container_of(handler,
-					                        struct fts_ts_data,
-					                        early_suspend);
+								struct fts_ts_data,
+								early_suspend);
 
 	fts_ts_resume(&data->client->dev);
 }
@@ -1438,7 +1439,7 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 	}
 
 	ts_data->ts_workqueue = create_singlethread_workqueue("fts_wq");
-	if (NULL == ts_data->ts_workqueue) {
+	if (ts_data->ts_workqueue == NULL) {
 		FTS_ERROR("failed to create fts workqueue");
 	}
 
@@ -1471,7 +1472,7 @@ static int fts_ts_probe(struct i2c_client *client, const struct i2c_device_id *i
 
 #if FTS_PINCTRL_EN
 	ret = fts_pinctrl_init(ts_data);
-	if (0 == ret) {
+	if (ret == 0) {
 		fts_pinctrl_select_normal(ts_data);
 	}
 #endif
@@ -1792,7 +1793,7 @@ static int fts_ts_resume(struct device *dev)
 #endif
 
 #if FTS_GESTURE_EN
-	if(enable_gesture_mode) {
+	if (enable_gesture_mode) {
 		if (fts_gesture_resume(ts_data->client) == 0) {
 			ts_data->suspended = false;
 			fts_suspend_stats = false;
@@ -1805,11 +1806,11 @@ static int fts_ts_resume(struct device *dev)
 		enable_gesture_mode = !enable_gesture_mode;
 	}
 
-	if (!enable_gesture_mode){
+	if (!enable_gesture_mode) {
 		fts_irq_enable();
 	}
 
-	if (fts_delay_gesture ) {
+	if (fts_delay_gesture) {
 		enable_gesture_mode = !enable_gesture_mode;
 	}
 	ts_data->suspended = false;
@@ -1857,13 +1858,13 @@ static int __init fts_ts_init(void)
 	int ret = 0;
 
 	FTS_FUNC_ENTER();
-	if (IS_ERR_OR_NULL(g_lcd_id)){
+	if (IS_ERR_OR_NULL(g_lcd_id)) {
 		FTS_ERROR("g_lcd_id is ERROR!\n");
 		goto err_lcd;
 	} else {
-		if (strstr(g_lcd_id,"ft8719 video mode dsi tianma panel") != NULL) {
+		if (strstr(g_lcd_id, "ft8719 video mode dsi tianma panel") != NULL) {
 			FTS_INFO("LCM is right! [Vendor]tianma [IC]ft8719\n");
-		} else if (strstr(g_lcd_id,"nt36672a video mode dsi shenchao panel") != NULL) {
+		} else if (strstr(g_lcd_id, "nt36672a video mode dsi shenchao panel") != NULL) {
 			FTS_ERROR("LCM is right! [Vendor]shenchao [IC] nt36672a\n");
 			goto err_lcd;
 		} else {
@@ -1872,7 +1873,7 @@ static int __init fts_ts_init(void)
 		}
 	}
 	ret = i2c_add_driver(&fts_ts_driver);
-	if ( ret != 0 ) {
+	if (ret != 0) {
 		FTS_ERROR("Focaltech touch screen driver init failed!");
 	}
 	FTS_FUNC_EXIT();
