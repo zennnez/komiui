@@ -1,4 +1,3 @@
-
 if SND_SOC_TAS2563
 config TAS2563_REGMAP
     bool "Use of RegMap API"
