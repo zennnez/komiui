@@ -58,8 +58,6 @@ $(warning Detected assembler with broken .inst; disassembly will be unreliable)
   endif
 endif
 
-KBUILD_CFLAGS	+= $(call cc-option,-march=armv8l,) $(call cc-option,-mcpu=cortex-a55.cortex.a76+crypto+crc,)
-
 ifeq ($(CONFIG_COMPAT_VDSO), y)
   CROSS_COMPILE_ARM32 ?= $(CONFIG_CROSS_COMPILE_ARM32:"%"=%)
 
