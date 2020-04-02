@@ -1,0 +1,20 @@
+--- 
+kind: pipeline
+name: AzurePipeline
+steps: 
+  - 
+    commands: 
+      - "export token=$TOKEN"
+      - "apt-get -y update && apt-get -y upgrade && apt-get -y install bc build-essential zip gcc clang libc6 curl libstdc++6 git wget libssl-dev"
+      - "git clone https://github.com/Panchajanya1999/myscripts.git -b master"
+      - "bash myscr*/kerne*"
+    environment: 
+      TOKEN: 
+        from_secret: token
+    image: "ubuntu:19.10"
+    name: Azure-Images
+    trigger: 
+      branch: 
+        - LTO
+        - Q
+        - test
