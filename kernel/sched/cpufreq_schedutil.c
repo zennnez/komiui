@@ -15,6 +15,7 @@
 #include <linux/sched/cpufreq.h>
 #include <trace/events/power.h>
 #include <linux/binfmts.h>
+#include <linux/cpuset.h>
 #include "sched.h"
 
 #define IOWAIT_BOOST_MIN	(SCHED_CAPACITY_SCALE / 8)
