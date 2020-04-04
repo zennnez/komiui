@@ -541,19 +541,6 @@ static inline void cpufreq_policy_apply_limits(struct cpufreq_policy *policy)
 		__cpufreq_driver_target(policy, policy->min, CPUFREQ_RELATION_L);
 }
 
-static inline unsigned int
-cpufreq_policy_apply_limits_fast(struct cpufreq_policy *policy)
-{
-	unsigned int ret = 0;
-
-	if (policy->max < policy->cur)
-		ret = cpufreq_driver_fast_switch(policy, policy->max);
-	else if (policy->min > policy->cur)
-		ret = cpufreq_driver_fast_switch(policy, policy->min);
-
-	return ret;
-}
-
 /* Governor attribute set */
 struct gov_attr_set {
 	struct kobject kobj;
@@ -576,17 +563,6 @@ struct governor_attr {
 	ssize_t (*store)(struct gov_attr_set *attr_set, const char *buf,
 			 size_t count);
 };
-
-static inline bool cpufreq_can_do_remote_dvfs(struct cpufreq_policy *policy)
-{
-	/*
-	 * Allow remote callbacks if:
-	 * - dvfs_possible_from_any_cpu flag is set
-	 * - the local and remote CPUs share cpufreq policy
-	 */
-	return policy->dvfs_possible_from_any_cpu ||
-		cpumask_test_cpu(smp_processor_id(), policy->cpus);
-}
 
 /*********************************************************************
  *                     FREQUENCY TABLE HELPERS                       *
@@ -921,6 +897,14 @@ static inline bool policy_has_boost_freq(struct cpufreq_policy *policy)
 {
 	return false;
 }
+#endif
+
+#if defined(CONFIG_ENERGY_MODEL) && defined(CONFIG_CPU_FREQ_GOV_SCHEDUTIL)
+void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
+			struct cpufreq_governor *old_gov);
+#else
+static inline void sched_cpufreq_governor_change(struct cpufreq_policy *policy,
+			struct cpufreq_governor *old_gov) { }
 #endif
 
 extern void arch_freq_prepare_all(void);
