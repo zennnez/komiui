@@ -105,6 +105,7 @@ static int alarmtimer_rtc_add_device(struct device *dev,
 	int err = 0;
 	struct rtc_device *rtc = to_rtc_device(dev);
 	struct wakeup_source *__ws;
+	int ret = 0;
 
 	if (rtcdev)
 		return -EBUSY;
@@ -117,8 +118,8 @@ static int alarmtimer_rtc_add_device(struct device *dev,
 	spin_lock_irqsave(&rtcdev_lock, flags);
 	if (!rtcdev) {
 		if (!try_module_get(rtc->owner)) {
-			spin_unlock_irqrestore(&rtcdev_lock, flags);
-			return -1;
+			ret = -1;
+			goto unlock;
 		}
 
 		err = rtc_irq_register(rtc, &alarmtimer_rtc_task);
@@ -132,6 +133,7 @@ static int alarmtimer_rtc_add_device(struct device *dev,
 		__ws = NULL;
 	}
 
+unlock:
 rtc_irq_reg_err:
 	spin_unlock_irqrestore(&rtcdev_lock, flags);
 
