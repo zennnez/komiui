@@ -152,6 +152,7 @@ TRACE_EVENT(bus_avail_bw,
 		(unsigned long long)__entry->cur_mdp_bw)
 );
 
+#ifdef CONFIG_DEBUG_FS
 TRACE_EVENT(bus_rules_matches,
 
 	TP_PROTO(int node_id, int rule_id, unsigned long long node_ab,
@@ -181,6 +182,7 @@ TRACE_EVENT(bus_rules_matches,
 		(unsigned long long)__entry->node_ib,
 		(unsigned long long)__entry->node_clk)
 );
+#endif
 
 TRACE_EVENT(bus_bke_params,
 
