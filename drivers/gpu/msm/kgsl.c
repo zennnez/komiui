@@ -41,7 +41,7 @@
 #include "kgsl_sharedmem.h"
 #include "kgsl_drawobj.h"
 #include "kgsl_device.h"
-#include "kgsl_trace.h"
+//#include "kgsl_trace.h"
 #include "kgsl_sync.h"
 #include "kgsl_compat.h"
 #include "kgsl_pool.h"
@@ -712,7 +712,7 @@ void kgsl_context_detach(struct kgsl_context *context)
 
 	device = context->device;
 
-	trace_kgsl_context_detach(device, context);
+//	trace_kgsl_context_detach(device, context);
 
 	context->device->ftbl->drawctxt_detach(context);
 
@@ -738,7 +738,7 @@ kgsl_context_destroy(struct kref *kref)
 						    refcount);
 	struct kgsl_device *device = context->device;
 
-	trace_kgsl_context_destroy(device, context);
+//	trace_kgsl_context_destroy(device, context);
 
 	/*
 	 * It's not safe to destroy the context if it's not detached as GPU
@@ -757,10 +757,10 @@ kgsl_context_destroy(struct kref *kref)
 
 		/* clear device power constraint */
 		if (context->id == device->pwrctrl.constraint.owner_id) {
-			trace_kgsl_constraint(device,
-				device->pwrctrl.constraint.type,
-				device->pwrctrl.active_pwrlevel,
-				0);
+//			trace_kgsl_constraint(device,
+//				device->pwrctrl.constraint.type,
+//				device->pwrctrl.active_pwrlevel,
+//				0);
 			device->pwrctrl.constraint.type = KGSL_CONSTRAINT_NONE;
 		}
 
@@ -1679,15 +1679,15 @@ long kgsl_ioctl_device_waittimestamp_ctxtid(
 	kgsl_readtimestamp(device, context, KGSL_TIMESTAMP_RETIRED,
 		&temp_cur_ts);
 
-	trace_kgsl_waittimestamp_entry(device, context->id, temp_cur_ts,
-		param->timestamp, param->timeout);
+//	trace_kgsl_waittimestamp_entry(device, context->id, temp_cur_ts,
+//		param->timestamp, param->timeout);
 
 	result = device->ftbl->waittimestamp(device, context, param->timestamp,
 		param->timeout);
 
 	kgsl_readtimestamp(device, context, KGSL_TIMESTAMP_RETIRED,
 		&temp_cur_ts);
-	trace_kgsl_waittimestamp_exit(device, temp_cur_ts, result);
+//	trace_kgsl_waittimestamp_exit(device, temp_cur_ts, result);
 
 	kgsl_context_put(context);
 
@@ -1994,8 +1994,8 @@ long kgsl_ioctl_cmdstream_readtimestamp_ctxtid(struct kgsl_device_private
 		result = kgsl_readtimestamp(device, context,
 			param->type, &param->timestamp);
 
-		trace_kgsl_readtimestamp(device, context->id,
-			param->type, param->timestamp);
+//		trace_kgsl_readtimestamp(device, context->id,
+//			param->type, param->timestamp);
 	}
 
 	kgsl_context_put(context);
@@ -2016,7 +2016,7 @@ long kgsl_ioctl_drawctxt_create(struct kgsl_device_private *dev_priv,
 		result = PTR_ERR(context);
 		goto done;
 	}
-	trace_kgsl_context_create(dev_priv->device, context, param->flags);
+//	trace_kgsl_context_create(dev_priv->device, context, param->flags);
 
 	/* Commit the pointer to the context in context_idr */
 	write_lock(&device->context_lock);
@@ -2049,7 +2049,7 @@ long gpumem_free_entry(struct kgsl_mem_entry *entry)
 	if (!kgsl_mem_entry_set_pend(entry))
 		return -EBUSY;
 
-	trace_kgsl_mem_free(entry);
+//	trace_kgsl_mem_free(entry);
 	kgsl_memfree_add(entry->priv->pid,
 			entry->memdesc.pagetable ?
 				entry->memdesc.pagetable->name : 0,
@@ -2071,8 +2071,8 @@ static void gpumem_free_func(struct kgsl_device *device,
 	kgsl_readtimestamp(device, context, KGSL_TIMESTAMP_RETIRED, &timestamp);
 
 	/* Free the memory for all event types */
-	trace_kgsl_mem_timestamp_free(device, entry, KGSL_CONTEXT_ID(context),
-		timestamp, 0);
+//	trace_kgsl_mem_timestamp_free(device, entry, KGSL_CONTEXT_ID(context),
+//		timestamp, 0);
 	kgsl_memfree_add(entry->priv->pid,
 			entry->memdesc.pagetable ?
 				entry->memdesc.pagetable->name : 0,
@@ -2093,8 +2093,8 @@ static long gpumem_free_entry_on_timestamp(struct kgsl_device *device,
 		return -EBUSY;
 
 	kgsl_readtimestamp(device, context, KGSL_TIMESTAMP_RETIRED, &temp);
-	trace_kgsl_mem_timestamp_queue(device, entry, context->id, temp,
-		timestamp);
+//	trace_kgsl_mem_timestamp_queue(device, entry, context->id, temp,
+//		timestamp);
 	ret = kgsl_add_low_prio_event(device, &context->events,
 		timestamp, gpumem_free_func, entry);
 
@@ -2172,7 +2172,7 @@ static bool gpuobj_free_fence_func(void *priv)
 {
 	struct kgsl_mem_entry *entry = priv;
 
-	trace_kgsl_mem_free(entry);
+//	trace_kgsl_mem_free(entry);
 	kgsl_memfree_add(entry->priv->pid,
 			entry->memdesc.pagetable ?
 				entry->memdesc.pagetable->name : 0,
@@ -2676,7 +2676,7 @@ long kgsl_ioctl_gpuobj_import(struct kgsl_device_private *dev_priv,
 		kgsl_memdesc_usermem_type(&entry->memdesc),
 		entry->memdesc.size);
 
-	trace_kgsl_mem_map(entry, fd);
+//	trace_kgsl_mem_map(entry, fd);
 
 	kgsl_mem_entry_commit_process(entry);
 
@@ -2990,7 +2990,7 @@ long kgsl_ioctl_map_user_mem(struct kgsl_device_private *dev_priv,
 	kgsl_process_add_stats(private,
 			kgsl_memdesc_usermem_type(&entry->memdesc), param->len);
 
-	trace_kgsl_mem_map(entry, param->fd);
+//	trace_kgsl_mem_map(entry, param->fd);
 
 	kgsl_mem_entry_commit_process(entry);
 
@@ -3053,7 +3053,7 @@ static int _kgsl_gpumem_sync_cache(struct kgsl_mem_entry *entry,
 	mode = kgsl_memdesc_get_cachemode(&entry->memdesc);
 	if (mode != KGSL_CACHEMODE_UNCACHED
 		&& mode != KGSL_CACHEMODE_WRITECOMBINE) {
-		trace_kgsl_mem_sync_cache(entry, offset, length, op);
+//		trace_kgsl_mem_sync_cache(entry, offset, length, op);
 		ret = kgsl_cache_range_op(&entry->memdesc, offset,
 					length, cacheop);
 	}
@@ -3174,10 +3174,10 @@ long kgsl_ioctl_gpumem_sync_cache_bulk(struct kgsl_device_private *dev_priv,
 		entries[actual_count++] = entry;
 
 		full_flush  = check_full_flush(op_size, param->op);
-		if (full_flush) {
-			trace_kgsl_mem_sync_full_cache(actual_count, op_size);
-			break;
-		}
+//		if (full_flush) {
+//			trace_kgsl_mem_sync_full_cache(actual_count, op_size);
+//			break;
+//		}
 
 		last_id = id;
 	}
@@ -3264,7 +3264,7 @@ long kgsl_ioctl_gpuobj_sync(struct kgsl_device_private *dev_priv,
 
 		full_flush = check_full_flush(size, objs[i].op);
 		if (full_flush) {
-			trace_kgsl_mem_sync_full_cache(i, size);
+//			trace_kgsl_mem_sync_full_cache(i, size);
 			goto out;
 		}
 
@@ -3377,7 +3377,7 @@ struct kgsl_mem_entry *gpumem_alloc_entry(
 	kgsl_process_add_stats(private,
 			kgsl_memdesc_usermem_type(&entry->memdesc),
 			entry->memdesc.size);
-	trace_kgsl_mem_alloc(entry);
+//	trace_kgsl_mem_alloc(entry);
 
 	kgsl_mem_entry_commit_process(entry);
 	return entry;
@@ -3608,7 +3608,7 @@ long kgsl_ioctl_sparse_phys_alloc(struct kgsl_device_private *dev_priv,
 			kgsl_memdesc_usermem_type(&entry->memdesc),
 			entry->memdesc.size);
 
-	trace_sparse_phys_alloc(entry->id, param->size, param->pagesize);
+//	trace_sparse_phys_alloc(entry->id, param->size, param->pagesize);
 	kgsl_mem_entry_commit_process(entry);
 
 	/* Put the extra ref from kgsl_mem_entry_create() */
@@ -3657,7 +3657,7 @@ long kgsl_ioctl_sparse_phys_free(struct kgsl_device_private *dev_priv,
 		return -EINVAL;
 	}
 
-	trace_sparse_phys_free(entry->id);
+//	trace_sparse_phys_free(entry->id);
 
 	/* One put for find_id(), one put for the kgsl_mem_entry_create() */
 	kgsl_mem_entry_put(entry);
@@ -3705,7 +3705,7 @@ long kgsl_ioctl_sparse_virt_alloc(struct kgsl_device_private *dev_priv,
 	param->gpuaddr = entry->memdesc.gpuaddr;
 	param->flags = entry->memdesc.flags;
 
-	trace_sparse_virt_alloc(entry->id, param->size, param->pagesize);
+//	trace_sparse_virt_alloc(entry->id, param->size, param->pagesize);
 	kgsl_mem_entry_commit_process(entry);
 
 	/* Put the extra ref from kgsl_mem_entry_create() */
@@ -3741,7 +3741,7 @@ long kgsl_ioctl_sparse_virt_free(struct kgsl_device_private *dev_priv,
 		return -EINVAL;
 	}
 
-	trace_sparse_virt_free(entry->id);
+//	trace_sparse_virt_free(entry->id);
 
 	/* One put for find_id(), one put for the kgsl_mem_entry_create() */
 	kgsl_mem_entry_put(entry);
@@ -3884,7 +3884,7 @@ static int _sparse_unbind(struct kgsl_mem_entry *entry,
 	ret = _sparse_rm_from_bind_tree(entry, bind_obj, offset, size);
 	if (ret == 0) {
 		atomic_long_sub(size, &kgsl_driver.stats.mapped);
-		trace_sparse_unbind(entry->id, offset, size);
+//		trace_sparse_unbind(entry->id, offset, size);
 	}
 
 	return ret;
@@ -4057,9 +4057,9 @@ static long sparse_bind_range(struct kgsl_process_private *private,
 		KGSL_STATS_ADD(obj->size, &kgsl_driver.stats.mapped,
 				&kgsl_driver.stats.mapped_max);
 
-		trace_sparse_bind(virt_entry->id, obj->virtoffset,
-				phys_entry->id, obj->physoffset,
-				obj->size, obj->flags);
+//		trace_sparse_bind(virt_entry->id, obj->virtoffset,
+//				phys_entry->id, obj->physoffset,
+//				obj->size, obj->flags);
 	}
 
 	kgsl_mem_entry_put(phys_entry);
@@ -4554,7 +4554,7 @@ static unsigned long _search_range(struct kgsl_process_private *private,
 		if (!IS_ERR_VALUE(result))
 			break;
 
-		trace_kgsl_mem_unmapped_area_collision(entry, cpu, len);
+//		trace_kgsl_mem_unmapped_area_collision(entry, cpu, len);
 
 		if (cpu <= start) {
 			result = -ENOMEM;
@@ -4778,7 +4778,7 @@ static int kgsl_mmap(struct file *file, struct vm_area_struct *vma)
 
 	entry->memdesc.useraddr = vma->vm_start;
 
-	trace_kgsl_mem_mmap(entry);
+//	trace_kgsl_mem_mmap(entry);
 	return 0;
 }
 

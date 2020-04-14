@@ -20,14 +20,14 @@
 #include "a5xx_reg.h"
 #include "adreno_a5xx.h"
 #include "adreno_cp_parser.h"
-#include "adreno_trace.h"
+//#include "adreno_trace.h"
 #include "adreno_pm4types.h"
 #include "adreno_perfcounter.h"
 #include "adreno_ringbuffer.h"
 #include "kgsl_sharedmem.h"
 #include "kgsl_log.h"
 #include "kgsl.h"
-#include "kgsl_trace.h"
+//#include "kgsl_trace.h"
 #include "adreno_a5xx_packets.h"
 
 static int critical_packet_constructed;
@@ -582,7 +582,7 @@ static void a5xx_enable_pc(struct adreno_device *adreno_dev)
 	kgsl_regwrite(device, A5XX_GPMU_PWR_COL_INTER_FRAME_HYST, 0x000A0080);
 	kgsl_regwrite(device, A5XX_GPMU_PWR_COL_STAGGER_DELAY, 0x00600040);
 
-	trace_adreno_sp_tp((unsigned long) __builtin_return_address(0));
+//	trace_adreno_sp_tp((unsigned long) __builtin_return_address(0));
 };
 
 /*
@@ -1715,10 +1715,10 @@ static int64_t a5xx_read_throttling_counters(struct adreno_device *adreno_dev)
 	adj = th[CRC_MORE50PCT] - th[IDLE_10PCT];
 	adj = th[CRC_50PCT] + th[CRC_LESS50PCT] / 3 + (adj < 0 ? 0 : adj) * 3;
 
-	trace_kgsl_clock_throttling(
-		th[IDLE_10PCT], th[CRC_50PCT],
-		th[CRC_MORE50PCT], th[CRC_LESS50PCT],
-		adj);
+//	trace_kgsl_clock_throttling(
+//		th[IDLE_10PCT], th[CRC_50PCT],
+//		th[CRC_MORE50PCT], th[CRC_LESS50PCT],
+//		adj);
 	return adj;
 }
 
@@ -3620,7 +3620,7 @@ struct adreno_gpudev adreno_a5xx_gpudev = {
 	.snapshot = a5xx_snapshot,
 	.irq = &a5xx_irq,
 	.snapshot_data = &a5xx_snapshot_data,
-	.irq_trace = trace_kgsl_a5xx_irq_status,
+//	.irq_trace = trace_kgsl_a5xx_irq_status,
 	.num_prio_levels = KGSL_PRIORITY_MAX_RB_LEVELS,
 	.platform_setup = a5xx_platform_setup,
 	.init = a5xx_init,

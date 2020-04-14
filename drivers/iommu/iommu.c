@@ -33,7 +33,7 @@
 #include <linux/bitops.h>
 #include <linux/debugfs.h>
 #include <linux/property.h>
-#include <trace/events/iommu.h>
+//#include <trace/events/iommu.h>
 
 #include "iommu-debug.h"
 
@@ -605,7 +605,7 @@ rename:
 	blocking_notifier_call_chain(&group->notifier,
 				     IOMMU_GROUP_NOTIFY_ADD_DEVICE, dev);
 
-	trace_add_device_to_group(group->id, dev);
+//	trace_add_device_to_group(group->id, dev);
 
 	pr_info("Adding device %s to group %d\n", dev_name(dev), group->id);
 
@@ -663,7 +663,7 @@ void iommu_group_remove_device(struct device *dev)
 	sysfs_remove_link(group->devices_kobj, device->name);
 	sysfs_remove_link(&dev->kobj, "iommu_group");
 
-	trace_remove_device_from_group(group->id, dev);
+//	trace_remove_device_from_group(group->id, dev);
 
 	kfree(device->name);
 	kfree(device);
@@ -1302,7 +1302,7 @@ static int __iommu_attach_device(struct iommu_domain *domain,
 
 	ret = domain->ops->attach_dev(domain, dev);
 	if (!ret) {
-		trace_attach_device_to_domain(dev);
+//		trace_attach_device_to_domain(dev);
 		iommu_debug_attach_device(domain, dev);
 
 		if (!strnlen(domain->name, IOMMU_DOMAIN_NAME_LEN)) {
@@ -1349,7 +1349,7 @@ static void __iommu_detach_device(struct iommu_domain *domain,
 		return;
 
 	domain->ops->detach_dev(domain, dev);
-	trace_detach_device_from_domain(dev);
+//	trace_detach_device_from_domain(dev);
 }
 
 void iommu_detach_device(struct iommu_domain *domain, struct device *dev)
@@ -1598,7 +1598,7 @@ int iommu_map(struct iommu_domain *domain, unsigned long iova,
 	if (ret)
 		iommu_unmap(domain, orig_iova, orig_size - size);
 	else
-		trace_map(domain, orig_iova, orig_paddr, orig_size, prot);
+//		trace_map(domain, orig_iova, orig_paddr, orig_size, prot);
 
 	return ret;
 }
@@ -1610,7 +1610,7 @@ static size_t __iommu_unmap(struct iommu_domain *domain,
 {
 	const struct iommu_ops *ops = domain->ops;
 	size_t unmapped_page, unmapped = 0;
-	unsigned long orig_iova = iova;
+//	unsigned long orig_iova = iova;
 	unsigned int min_pagesz;
 
 	if (unlikely(ops->unmap == NULL ||
@@ -1660,7 +1660,7 @@ static size_t __iommu_unmap(struct iommu_domain *domain,
 	if (sync && ops->iotlb_sync)
 		ops->iotlb_sync(domain);
 
-	trace_unmap(domain, orig_iova, size, unmapped);
+//	trace_unmap(domain, orig_iova, size, unmapped);
 	return unmapped;
 }
 
@@ -1685,7 +1685,7 @@ size_t iommu_map_sg(struct iommu_domain *domain,
 	size_t mapped;
 
 	mapped = domain->ops->map_sg(domain, iova, sg, nents, prot);
-	trace_map_sg(domain, iova, mapped, prot);
+//	trace_map_sg(domain, iova, mapped, prot);
 	return mapped;
 }
 EXPORT_SYMBOL(iommu_map_sg);
@@ -1790,7 +1790,7 @@ int report_iommu_fault(struct iommu_domain *domain, struct device *dev,
 		ret = domain->handler(domain, dev, iova, flags,
 						domain->handler_token);
 
-	trace_io_page_fault(dev, iova, flags);
+//	trace_io_page_fault(dev, iova, flags);
 	return ret;
 }
 EXPORT_SYMBOL_GPL(report_iommu_fault);

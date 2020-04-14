@@ -13,7 +13,7 @@
 #include "adreno.h"
 #include "adreno_a5xx.h"
 #include "a5xx_reg.h"
-#include "adreno_trace.h"
+//#include "adreno_trace.h"
 #include "adreno_pm4types.h"
 
 #define PREEMPT_RECORD(_field) \
@@ -88,7 +88,7 @@ static void _a5xx_preemption_done(struct adreno_device *adreno_dev)
 
 	del_timer_sync(&adreno_dev->preempt.timer);
 
-	trace_adreno_preempt_done(adreno_dev->cur_rb, adreno_dev->next_rb, 0);
+//	trace_adreno_preempt_done(adreno_dev->cur_rb, adreno_dev->next_rb, 0);
 
 	/* Clean up all the bits */
 	adreno_dev->prev_rb = adreno_dev->cur_rb;
@@ -272,8 +272,8 @@ void a5xx_preemption_trigger(struct adreno_device *adreno_dev)
 	mod_timer(&adreno_dev->preempt.timer,
 		jiffies + msecs_to_jiffies(ADRENO_PREEMPT_TIMEOUT));
 
-	trace_adreno_preempt_trigger(adreno_dev->cur_rb, adreno_dev->next_rb,
-		1);
+//	trace_adreno_preempt_trigger(adreno_dev->cur_rb, adreno_dev->next_rb,
+//		1);
 
 	adreno_set_preempt_state(adreno_dev, ADRENO_PREEMPT_TRIGGERED);
 
@@ -308,7 +308,7 @@ void a5xx_preempt_callback(struct adreno_device *adreno_dev, int bit)
 
 	del_timer(&adreno_dev->preempt.timer);
 
-	trace_adreno_preempt_done(adreno_dev->cur_rb, adreno_dev->next_rb, 0);
+//	trace_adreno_preempt_done(adreno_dev->cur_rb, adreno_dev->next_rb, 0);
 
 	adreno_dev->prev_rb = adreno_dev->cur_rb;
 	adreno_dev->cur_rb = adreno_dev->next_rb;

@@ -28,14 +28,14 @@
 #include "kgsl_pwrscale.h"
 #include "kgsl_sharedmem.h"
 #include "kgsl_iommu.h"
-#include "kgsl_trace.h"
+//#include "kgsl_trace.h"
 #include "adreno_llc.h"
 
 #include "adreno.h"
 #include "adreno_iommu.h"
 #include "adreno_compat.h"
 #include "adreno_pm4types.h"
-#include "adreno_trace.h"
+//#include "adreno_trace.h"
 
 #include "a3xx_reg.h"
 #include "a6xx_reg.h"
@@ -1159,8 +1159,9 @@ static int adreno_of_get_power(struct adreno_device *adreno_dev,
 	device->pwrctrl.bus_control = of_property_read_bool(node,
 		"qcom,bus-control");
 
-	device->pwrctrl.input_disable = of_property_read_bool(node,
-		"qcom,disable-wake-on-touch");
+//	device->pwrctrl.input_disable = of_property_read_bool(node,
+//		"qcom,disable-wake-on-touch");
+	device->pwrctrl.input_disable = true;
 
 	return 0;
 }
@@ -2796,19 +2797,19 @@ int adreno_set_constraint(struct kgsl_device *device,
 		context->pwr_constraint.type =
 				KGSL_CONSTRAINT_PWRLEVEL;
 		context->pwr_constraint.sub_type = pwr.level;
-		trace_kgsl_user_pwrlevel_constraint(device,
-			context->id,
-			context->pwr_constraint.type,
-			context->pwr_constraint.sub_type);
+//		trace_kgsl_user_pwrlevel_constraint(device,
+//			context->id,
+//			context->pwr_constraint.type,
+//			context->pwr_constraint.sub_type);
 		}
 		break;
 	case KGSL_CONSTRAINT_NONE:
-		if (context->pwr_constraint.type == KGSL_CONSTRAINT_PWRLEVEL)
-			trace_kgsl_user_pwrlevel_constraint(device,
-				context->id,
-				KGSL_CONSTRAINT_NONE,
-				context->pwr_constraint.sub_type);
-		context->pwr_constraint.type = KGSL_CONSTRAINT_NONE;
+//		if (context->pwr_constraint.type == KGSL_CONSTRAINT_PWRLEVEL)
+//			trace_kgsl_user_pwrlevel_constraint(device,
+//				context->id,
+//				KGSL_CONSTRAINT_NONE,
+//				context->pwr_constraint.sub_type);
+//		context->pwr_constraint.type = KGSL_CONSTRAINT_NONE;
 		break;
 	case KGSL_CONSTRAINT_L3_PWRLEVEL: {
 		struct kgsl_device_constraint_pwrlevel pwr;
@@ -2827,18 +2828,18 @@ int adreno_set_constraint(struct kgsl_device *device,
 
 		context->l3_pwr_constraint.type = KGSL_CONSTRAINT_L3_PWRLEVEL;
 		context->l3_pwr_constraint.sub_type = pwr.level;
-		trace_kgsl_user_pwrlevel_constraint(device, context->id,
-			context->l3_pwr_constraint.type,
-			context->l3_pwr_constraint.sub_type);
+//		trace_kgsl_user_pwrlevel_constraint(device, context->id,
+//			context->l3_pwr_constraint.type,
+//			context->l3_pwr_constraint.sub_type);
 		}
 		break;
 	case KGSL_CONSTRAINT_L3_NONE: {
 		unsigned int type = context->l3_pwr_constraint.type;
 
 		if (type == KGSL_CONSTRAINT_L3_PWRLEVEL)
-			trace_kgsl_user_pwrlevel_constraint(device, context->id,
-				KGSL_CONSTRAINT_L3_NONE,
-				context->l3_pwr_constraint.sub_type);
+//			trace_kgsl_user_pwrlevel_constraint(device, context->id,
+//				KGSL_CONSTRAINT_L3_NONE,
+//				context->l3_pwr_constraint.sub_type);
 		context->l3_pwr_constraint.type = KGSL_CONSTRAINT_L3_NONE;
 		}
 		break;
@@ -2850,8 +2851,8 @@ int adreno_set_constraint(struct kgsl_device *device,
 	/* If a new constraint has been set for a context, cancel the old one */
 	if ((status == 0) &&
 		(context->id == device->pwrctrl.constraint.owner_id)) {
-		trace_kgsl_constraint(device, device->pwrctrl.constraint.type,
-					device->pwrctrl.active_pwrlevel, 0);
+//		trace_kgsl_constraint(device, device->pwrctrl.constraint.type,
+//					device->pwrctrl.active_pwrlevel, 0);
 		device->pwrctrl.constraint.type = KGSL_CONSTRAINT_NONE;
 	}
 
@@ -3338,7 +3339,7 @@ static void adreno_regwrite(struct kgsl_device *device,
 	if (!in_interrupt())
 		kgsl_pre_hwaccess(device);
 
-	trace_kgsl_regwrite(device, offsetwords, value);
+//	trace_kgsl_regwrite(device, offsetwords, value);
 
 	reg = (device->reg_virt + (offsetwords << 2));
 
@@ -3514,7 +3515,7 @@ void adreno_cx_dbgc_regwrite(struct kgsl_device *device,
 		return;
 
 	cx_dbgc_offset = (offsetwords << 2) - adreno_dev->cx_dbgc_base;
-	trace_kgsl_regwrite(device, offsetwords, value);
+//	trace_kgsl_regwrite(device, offsetwords, value);
 
 	/*
 	 * ensure previous writes post before this one,
@@ -3850,8 +3851,8 @@ static void adreno_power_stats(struct kgsl_device *device,
 		num_ifpc = counter_delta(device, adreno_dev->perfctr_ifpc_lo,
 				&busy->num_ifpc);
 		adreno_dev->ifpc_count += num_ifpc;
-		if (num_ifpc > 0)
-			trace_adreno_ifpc_count(adreno_dev->ifpc_count);
+//		if (num_ifpc > 0)
+//			trace_adreno_ifpc_count(adreno_dev->ifpc_count);
 	}
 
 	if (adreno_dev->lm_threshold_count &&

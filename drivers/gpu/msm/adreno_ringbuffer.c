@@ -19,14 +19,14 @@
 
 #include "kgsl.h"
 #include "kgsl_sharedmem.h"
-#include "kgsl_trace.h"
+//#include "kgsl_trace.h"
 #include "kgsl_pwrctrl.h"
 
 #include "adreno.h"
 #include "adreno_iommu.h"
 #include "adreno_pm4types.h"
 #include "adreno_ringbuffer.h"
-#include "adreno_trace.h"
+//#include "adreno_trace.h"
 
 #include "a3xx_reg.h"
 #include "adreno_a5xx.h"
@@ -75,7 +75,7 @@ static void adreno_get_submit_time(struct adreno_device *adreno_dev,
 		time->ticks = 0;
 
 	/* Trace the GPU time to create a mapping to ftrace time */
-	trace_adreno_cmdbatch_sync(rb->drawctxt_active, time->ticks);
+//	trace_adreno_cmdbatch_sync(rb->drawctxt_active, time->ticks);
 
 	/* Get the kernel clock for time since boot */
 	time->ktime = local_clock();
@@ -1185,8 +1185,8 @@ int adreno_ringbuffer_submitcmd(struct adreno_device *adreno_dev,
 	}
 
 done:
-	trace_kgsl_issueibcmds(device, context->id, numibs, drawobj->timestamp,
-			drawobj->flags, ret, drawctxt->type);
+//	trace_kgsl_issueibcmds(device, context->id, numibs, drawobj->timestamp,
+//			drawobj->flags, ret, drawctxt->type);
 
 	if (unlikely(link != link_onstack))
 		kfree(link);

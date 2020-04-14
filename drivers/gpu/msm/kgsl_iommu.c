@@ -32,7 +32,7 @@
 #include "kgsl_iommu.h"
 #include "adreno_pm4types.h"
 #include "adreno.h"
-#include "kgsl_trace.h"
+//#include "kgsl_trace.h"
 #include "kgsl_pwrctrl.h"
 
 #define _IOMMU_PRIV(_mmu) (&((_mmu)->priv.iommu))
@@ -865,10 +865,10 @@ static int kgsl_iommu_fault_handler(struct iommu_domain *domain,
 	 * address in free list as it takes quite long time in
 	 * search and delays the trace unnecessarily.
 	 */
-	trace_kgsl_mmu_pagefault(ctx->kgsldev, addr,
-			ptname,
-			context != NULL ? context->proc_priv->comm : "unknown",
-			write ? "write" : "read");
+//	trace_kgsl_mmu_pagefault(ctx->kgsldev, addr,
+//			ptname,
+//			context != NULL ? context->proc_priv->comm : "unknown",
+//			write ? "write" : "read");
 
 	if (test_bit(KGSL_FT_PAGEFAULT_LOG_ONE_PER_PAGE,
 		&adreno_dev->ft_pf_policy))
@@ -1089,7 +1089,7 @@ static void kgsl_iommu_destroy_pagetable(struct kgsl_pagetable *pt)
 	}
 
 	if (iommu_pt->domain) {
-		trace_kgsl_pagetable_destroy(iommu_pt->ttbr0, pt->name);
+//		trace_kgsl_pagetable_destroy(iommu_pt->ttbr0, pt->name);
 
 		_detach_pt(iommu_pt, ctx);
 

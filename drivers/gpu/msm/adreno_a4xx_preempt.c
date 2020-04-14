@@ -13,7 +13,7 @@
 
 #include "adreno.h"
 #include "adreno_a4xx.h"
-#include "adreno_trace.h"
+//#include "adreno_trace.h"
 #include "adreno_pm4types.h"
 
 #define ADRENO_RB_PREEMPT_TOKEN_DWORDS		125
@@ -238,10 +238,10 @@ static void a4xx_preempt_trig_state(struct adreno_device *adreno_dev)
 		if (val && rbbase == adreno_dev->next_rb->buffer_desc.gpuaddr) {
 			KGSL_DRV_INFO(device,
 			"Preemption completed without interrupt\n");
-			trace_adreno_hw_preempt_trig_to_comp(adreno_dev->cur_rb,
-					adreno_dev->next_rb,
-					adreno_get_rptr(adreno_dev->cur_rb),
-					adreno_get_rptr(adreno_dev->next_rb));
+//			trace_adreno_hw_preempt_trig_to_comp(adreno_dev->cur_rb,
+//					adreno_dev->next_rb,
+//					adreno_get_rptr(adreno_dev->cur_rb),
+//					adreno_get_rptr(adreno_dev->next_rb));
 			adreno_set_preempt_state(adreno_dev,
 				ADRENO_PREEMPT_COMPLETE);
 			adreno_dispatcher_schedule(device);
@@ -296,10 +296,10 @@ static void a4xx_preempt_trig_state(struct adreno_device *adreno_dev)
 
 	adreno_dev->preempt.token_submit = true;
 	adreno_dev->cur_rb->wptr_preempt_end = adreno_dev->cur_rb->wptr;
-	trace_adreno_hw_preempt_token_submit(adreno_dev->cur_rb,
-			adreno_dev->next_rb,
-			adreno_get_rptr(adreno_dev->cur_rb),
-			adreno_get_rptr(adreno_dev->next_rb));
+//	trace_adreno_hw_preempt_token_submit(adreno_dev->cur_rb,
+//			adreno_dev->next_rb,
+//			adreno_get_rptr(adreno_dev->cur_rb),
+//			adreno_get_rptr(adreno_dev->next_rb));
 }
 
 static struct adreno_ringbuffer *a4xx_next_ringbuffer(
@@ -380,10 +380,10 @@ static void a4xx_preempt_clear_state(struct adreno_device *adreno_dev)
 	mod_timer(&adreno_dev->preempt.timer, jiffies +
 		msecs_to_jiffies(ADRENO_PREEMPT_TIMEOUT));
 
-	trace_adreno_hw_preempt_clear_to_trig(adreno_dev->cur_rb,
-			adreno_dev->next_rb,
-			adreno_get_rptr(adreno_dev->cur_rb),
-			adreno_get_rptr(adreno_dev->next_rb));
+//	trace_adreno_hw_preempt_clear_to_trig(adreno_dev->cur_rb,
+//			adreno_dev->next_rb,
+//			adreno_get_rptr(adreno_dev->cur_rb),
+//			adreno_get_rptr(adreno_dev->next_rb));
 	/* issue PREEMPT trigger */
 	adreno_writereg(adreno_dev, ADRENO_REG_CP_PREEMPT, 1);
 
@@ -437,10 +437,10 @@ static void a4xx_preempt_complete_state(struct adreno_device *adreno_dev)
 	a4xx_preemption_save(adreno_dev, adreno_dev->cur_rb);
 
 	/* new RB is the current RB */
-	trace_adreno_hw_preempt_comp_to_clear(adreno_dev->next_rb,
-			adreno_dev->cur_rb,
-			adreno_get_rptr(adreno_dev->next_rb),
-			adreno_get_rptr(adreno_dev->cur_rb));
+//	trace_adreno_hw_preempt_comp_to_clear(adreno_dev->next_rb,
+//			adreno_dev->cur_rb,
+//			adreno_get_rptr(adreno_dev->next_rb),
+//			adreno_get_rptr(adreno_dev->cur_rb));
 
 	adreno_dev->prev_rb = adreno_dev->cur_rb;
 	adreno_dev->cur_rb = adreno_dev->next_rb;
