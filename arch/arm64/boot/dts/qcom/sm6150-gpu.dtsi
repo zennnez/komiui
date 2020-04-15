@@ -98,8 +98,6 @@
 		/* GDSC oxili regulators */
 		vddcx-supply = <&gpu_cx_gdsc>;
 		vdd-supply = <&gpu_gx_gdsc>;
-		/* Cx ipeak limit supprt */
-		qcom,gpu-cx-ipeak = <&cx_ipeak_lm 1>;
 
 		/* GPU related llc slices */
 		cache-slice-names = "gpu", "gpuhtw";

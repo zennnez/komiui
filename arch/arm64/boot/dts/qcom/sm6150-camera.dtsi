@@ -419,7 +419,6 @@
 			<0 0 0 80000000 0 0>;
 		clock-cntl-level = "suspend", "minsvs", "lowsvs", "svs",
 			"svs_l1", "nominal", "turbo";
-		qcom,cam-cx-ipeak = <&cx_ipeak_lm 2>;
 		qcom,msm-bus,name = "cam_ahb";
 		qcom,msm-bus,num-cases = <7>;
 		qcom,msm-bus,num-paths = <1>;
@@ -676,7 +675,6 @@
 		clock-names-option =  "ife_dsp_clk";
 		clocks-option = <&clock_camcc CAM_CC_IFE_0_DSP_CLK>;
 		clock-rates-option = <600000000>;
-		qcom,cam-cx-ipeak = <&cx_ipeak_lm 2>;
 		status = "ok";
 	};
 
@@ -765,7 +763,6 @@
 		clock-names-option =  "ife_dsp_clk";
 		clocks-option = <&clock_camcc CAM_CC_IFE_1_DSP_CLK>;
 		clock-rates-option = <600000000>;
-		qcom,cam-cx-ipeak = <&cx_ipeak_lm 2>;
 		status = "ok";
 	};
 
@@ -924,7 +921,6 @@
 			<0 0 0 0 600000000>;
 		clock-cntl-level = "svs",
 			"svs_l1", "nominal", "nominal_l1", "turbo";
-		qcom,cam-cx-ipeak = <&cx_ipeak_lm 2>;
 		status = "ok";
 	};
 
@@ -956,7 +952,6 @@
 			<0 0 0 0 600000000>;
 		clock-cntl-level = "svs",
 			"svs_l1", "nominal", "nominal_l1", "turbo";
-		qcom,cam-cx-ipeak = <&cx_ipeak_lm 2>;
 		status = "ok";
 	};
 
