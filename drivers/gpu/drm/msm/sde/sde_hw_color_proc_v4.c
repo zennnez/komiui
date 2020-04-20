@@ -18,17 +18,17 @@
 #ifdef CONFIG_KLAPSE
 #include <linux/klapse.h>
 
-unsigned short kcal_red = 245;
-unsigned short kcal_green = 245;
+unsigned short kcal_red = 215;
+unsigned short kcal_green = 220;
 unsigned short kcal_blue = 256;
 #else
-static unsigned short kcal_red = 245;
-static unsigned short kcal_green = 245;
+static unsigned short kcal_red = 215;
+static unsigned short kcal_green = 220;
 static unsigned short kcal_blue = 256;
 #endif
 static unsigned short kcal_hue = 0;
 static unsigned short kcal_sat = 265;
-static unsigned short kcal_val = 248;
+static unsigned short kcal_val = 245;
 static unsigned short kcal_cont = 260;
 
 module_param(kcal_red, short, 0644);
