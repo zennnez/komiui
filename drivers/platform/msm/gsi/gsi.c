@@ -3536,7 +3536,7 @@ int gsi_queue_xfer(unsigned long chan_hdl, uint16_t num_xfers,
 
 	if (unlikely(gsi_ctx->chan[chan_hdl].state
 				 == GSI_CHAN_STATE_NOT_ALLOCATED)) {
-		GSIERR("bad state %d\n",
+		GSIDBG("bad state %d\n",
 			   gsi_ctx->chan[chan_hdl].state);
 		return -GSI_STATUS_UNSUPPORTED_OP;
 	}
