@@ -522,7 +522,8 @@ static int tap_open(struct inode *inode, struct file *file)
 		goto err;
 	}
 
-	init_waitqueue_head(&q->sock.wq.wait);
+	RCU_INIT_POINTER(q->sock.wq, &q->wq);
+	init_waitqueue_head(&q->wq.wait);
 	q->sock.type = SOCK_RAW;
 	q->sock.state = SS_CONNECTED;
 	q->sock.file = file;
@@ -580,7 +581,7 @@ static unsigned int tap_poll(struct file *file, poll_table *wait)
 		goto out;
 
 	mask = 0;
-	poll_wait(file, &q->sock.wq.wait, wait);
+	poll_wait(file, &q->wq.wait, wait);
 
 	if (!skb_array_empty(&q->skb_array))
 		mask |= POLLIN | POLLRDNORM;
