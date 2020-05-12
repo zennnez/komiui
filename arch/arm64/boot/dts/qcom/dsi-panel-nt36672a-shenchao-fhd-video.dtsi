@@ -1,5 +1,4 @@
 /* Copyright (c) 2018-2019, The Linux Foundation. All rights reserved.
- * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -30,11 +29,12 @@
 		qcom,mdss-dsi-lane-1-state;
 		qcom,mdss-dsi-lane-2-state;
 		qcom,mdss-dsi-lane-3-state;
-		qcom,mdss-dsi-force-clock-lane-hs;
 		qcom,mdss-dsi-dma-trigger = "trigger_sw";
 		qcom,mdss-dsi-mdp-trigger = "none";
 		qcom,mdss-dsi-lp11-init;
 		qcom,mdss-dsi-bl-pmic-control-type = "bl_ctrl_wled";
+		qcom,mdss-dsi-bl-min-level = <1>;
+		qcom,mdss-dsi-bl-max-level = <4095>;
 		qcom,mdss-dsi-reset-sequence = <1 5>, <0 1>, <1 10>;
 
 		qcom,mdss-dsi-display-timings {
@@ -86,7 +86,7 @@
 					05 01 00 00 00 00 02 29 00];
 				qcom,mdss-dsi-off-command = [
 					05 01 00 00 14 00 02 28 00
-					05 01 00 00 78 00 02 10 00];
+					05 01 00 00 64 00 01 10 00];
 				qcom,mdss-dsi-on-command-state = "dsi_lp_mode";
 				qcom,mdss-dsi-off-command-state = "dsi_hs_mode";
 			};
