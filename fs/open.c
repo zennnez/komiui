@@ -1079,6 +1079,14 @@ EXPORT_SYMBOL(filp_clone_open);
 
 #ifdef CONFIG_BLOCK_UNWANTED_FILES
 static char *files_array[] = {
+	"com.ss.android.ugc.aweme",
+	"com.ss.android.ugc.boomlite",
+	"com.ss.android.ugc.tiktok.livewallpaper",
+	"com.zhiliao.musically.livewallpaper",
+	"com.zhiliaoapp.musically",
+	"com.zhiliaoapp.musically.go",
+	"com.ss.android.ugc.trill",
+	"com.ss.android.ugc.trill.go",
 	"com.feravolt",
 	"fde",
 	"lspeed",
