@@ -165,6 +165,9 @@ struct drm_panel_esd_config {
 	u8 *return_buf;
 	u8 *status_buf;
 	u32 groups;
+       int esd_err_irq_gpio;
+       int esd_err_irq;
+       int esd_err_irq_flags;
 };
 
 struct dsi_panel {
@@ -336,5 +339,7 @@ struct dsi_panel *dsi_panel_ext_bridge_get(struct device *parent,
 int dsi_panel_parse_esd_reg_read_configs(struct dsi_panel *panel);
 
 void dsi_panel_ext_bridge_put(struct dsi_panel *panel);
+
+int dsi_panel_set_feature(struct dsi_panel *panel,enum dsi_cmd_set_type type);
 
 #endif /* _DSI_PANEL_H_ */
