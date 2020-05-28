@@ -991,6 +991,10 @@ static int smb1390_ilim_vote_cb(struct votable *votable, void *data,
 		vote(chip->disable_votable, ILIM_VOTER, false, 0);
 	}
 
+	/* Notify userspace ILIM changed */
+	 if (chip->cp_master_psy)
+		 power_supply_changed(chip->cp_master_psy);
+
 	return rc;
 }
 
