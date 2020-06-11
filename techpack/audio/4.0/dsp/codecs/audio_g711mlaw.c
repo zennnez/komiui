@@ -20,8 +20,8 @@ static struct dentry *config_debugfs_create_file(const char *name, void *data)
 {
 	return debugfs_create_file(name, S_IFREG | 0444,
 				NULL, (void *)data, &audio_g711_debug_fops);
-#endif
 }
+#endif
 
 static int g711_channel_map(u8 *channel_mapping, uint32_t channels);
 

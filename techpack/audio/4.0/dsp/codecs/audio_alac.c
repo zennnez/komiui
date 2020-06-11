@@ -265,7 +265,7 @@ static int audio_open(struct inode *inode, struct file *file)
 	/* 4 bytes represents decoder number, 1 byte for terminate string */
 	char name[sizeof "msm_alac_" + 5];
 #endif
-￼
+
 	audio = kzalloc(sizeof(struct q6audio_aio), GFP_KERNEL);
 	if (!audio)
 		return -ENOMEM;
