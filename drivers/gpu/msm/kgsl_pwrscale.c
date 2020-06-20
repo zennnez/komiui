@@ -161,7 +161,7 @@ void kgsl_pwrscale_update_stats(struct kgsl_device *device)
 			do_div(y, 100);
 			x *= popp_param[psc->popp_level].gpu_x;
 			y *= popp_param[psc->popp_level].ddr_y;
-			trace_kgsl_popp_mod(device, x, y);
+//			trace_kgsl_popp_mod(device, x, y);
 			stats.busy_time += x;
 			stats.ram_time += y;
 		}
@@ -375,8 +375,8 @@ static bool popp_stable(struct kgsl_device *device)
 			percent_nap = 100 * nap_time;
 			div64_s64(percent_nap, nap_time + go_time);
 		}
-		trace_kgsl_popp_nap(device, (int)nap_time / 1000, nap,
-				percent_nap);
+//		trace_kgsl_popp_nap(device, (int)nap_time / 1000, nap,
+//				percent_nap);
 		/* If running high at turbo, don't push */
 		if (nap < MIN_SLEEP_PERIODS || percent_nap < MIN_SLEEP_PERCENT)
 			return false;
@@ -456,7 +456,7 @@ static void popp_trans1(struct kgsl_device *device)
 		break;
 	}
 
-	trace_kgsl_popp_level(device, old_level, psc->popp_level);
+//	trace_kgsl_popp_level(device, old_level, psc->popp_level);
 }
 
 /*
@@ -475,7 +475,7 @@ static int popp_trans2(struct kgsl_device *device, int level)
 	/* If the governor recommends going down, do it! */
 	if (pwr->active_pwrlevel < level) {
 		psc->popp_level = 0;
-		trace_kgsl_popp_level(device, old_level, psc->popp_level);
+//		trace_kgsl_popp_level(device, old_level, psc->popp_level);
 		return level;
 	}
 
@@ -501,7 +501,7 @@ static int popp_trans2(struct kgsl_device *device, int level)
 		break;
 	}
 
-	trace_kgsl_popp_level(device, old_level, psc->popp_level);
+//	trace_kgsl_popp_level(device, old_level, psc->popp_level);
 
 	return level;
 }
@@ -651,8 +651,8 @@ int kgsl_devfreq_get_dev_status(struct device *dev,
 	}
 
 	kgsl_pwrctrl_busy_time(device, stat->total_time, stat->busy_time);
-	trace_kgsl_pwrstats(device, stat->total_time,
-		&pwrscale->accum_stats, device->active_context_count);
+//	trace_kgsl_pwrstats(device, stat->total_time,
+//		&pwrscale->accum_stats, device->active_context_count);
 	memset(&pwrscale->accum_stats, 0, sizeof(pwrscale->accum_stats));
 
 	mutex_unlock(&device->mutex);
