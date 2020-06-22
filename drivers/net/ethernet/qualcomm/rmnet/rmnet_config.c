@@ -1,4 +1,4 @@
-/* Copyright (c) 2013-2020, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -89,11 +89,6 @@ static int rmnet_unregister_real_device(struct net_device *real_dev,
 
 	netdev_rx_handler_unregister(real_dev);
 
-	rmnet_map_cmd_exit(port);
-	rmnet_map_tx_aggregate_exit(port);
-
-	rmnet_descriptor_deinit(port);
-
 	kfree(port);
 
 	/* release reference on real_dev */
@@ -177,6 +172,11 @@ static int rmnet_newlink(struct net *src_net, struct net_device *dev,
 	u32 data_format;
 	int err = 0;
 	u16 mux_id;
+
+	if (!tb[IFLA_LINK]) {
+		NL_SET_ERR_MSG_MOD(extack, "link not specified");
+		return -EINVAL;
+	}
 
 	real_dev = __dev_get_by_index(src_net, nla_get_u32(tb[IFLA_LINK]));
 	if (!real_dev || !dev)
@@ -356,7 +356,7 @@ static int rmnet_rtnl_validate(struct nlattr *tb[], struct nlattr *data[],
 
 		if (data[IFLA_RMNET_UL_AGG_PARAMS]) {
 			agg_params = nla_data(data[IFLA_RMNET_UL_AGG_PARAMS]);
-			if (agg_params->agg_time < 1000000)
+			if (agg_params->agg_time < 3000000)
 				return -EINVAL;
 		}
 	}
