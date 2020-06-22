@@ -274,7 +274,7 @@ static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
 	u64 interactivity_req;
 	unsigned long nr_iowaiters;
 	ktime_t delta_next;
-	int i, idx;
+	int i, first_idx, idx;
 
 	if (data->needs_update) {
 		menu_update(drv, dev);
@@ -342,8 +342,7 @@ static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev,
 		 * a timer is going to trigger really really soon.
 		 */
 		polling_threshold = max_t(unsigned int, 20, s->target_residency);
-		if (data->next_timer_us > polling_threshold &&
-		    latency_req > s->exit_latency && !s->disabled &&
+		if (latency_req > s->exit_latency && !s->disabled &&
 		    !dev->states_usage[1].disable)
 			first_idx = 1;
 	}
