@@ -69,8 +69,6 @@
 #include <linux/lockdep.h>
 #include <linux/nmi.h>
 #include <linux/psi.h>
-#include <linux/cpu_input_boost.h>
-#include <linux/devfreq_boost.h>
 
 #include <asm/sections.h>
 #include <asm/tlbflush.h>
@@ -4170,7 +4168,6 @@ retry:
 
 	/* Boost when memory is low so allocation latency doesn't get too bad */
 	devfreq_boost_kick_max(DEVFREQ_MSM_LLCCBW, 100);
-	cpu_input_boost_kick_max(100);
 	devfreq_boost_kick_max(DEVFREQ_MSM_CPUBW, 100);
 
 	if (should_reclaim_retry(gfp_mask, order, ac, alloc_flags,
