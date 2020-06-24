@@ -6049,6 +6049,7 @@ static ssize_t ipa3_write(struct file *file, const char __user *buf,
 	unsigned long missing;
 	char *dbg_buff = NULL;
 	int ret = 0;
+	int i = 0;
 
 	if (count < 1)
 		return -EINVAL;
