@@ -649,8 +649,8 @@
 			label = "dfps_data_region";
 		};
 
-		disp_rdump_memory: disp_rdump_region@9c000000 {
-			reg = <0x0 0x9c000000 0x0 0x01700000>;
+		disp_rdump_memory: disp_rdump_region@9d800000 {
+			reg = <0x0 0x9d800000 0x0 0x01700000>;
 			label = "disp_rdump_region";
 		};
 
@@ -678,9 +678,9 @@
 			linux,cma-default;
 		};
 		/* reserve for pstore */
-		ramoops_mem: ramoops@9d800000 {
+		ramoops_mem: ramoops@9f500000 {
 			compatible = "ramoops";
-			reg = <0x0 0x9d800000 0x0 0x00400000>;
+			reg = <0x0 0x9f500000 0x0 0x00400000>;
 
 			record-size = <0x80000>;
 			pmsg-size = <0x200000>;
